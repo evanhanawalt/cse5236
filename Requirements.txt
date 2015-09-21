@@ -1,5 +1,16 @@
 Submit and Show:
-	App concept notes: Narratives, sketches, list of use cases, screen layouts, and screen flows;
+	App concept notes: Narratives, sketches, list of use cases, screen layouts, and screen  flows;
+
+
+Must  uniquely meet a clear need; 
+–Must be well-designed (by following the process outlined in the course);
+–Must have a UI (i.e., it can’t only be a background service);
+–Must have a rich set of domain objects;
+–Must have data that is persistent across sessions;
+–Must use one or more external services (e.g., maps);
+–Must use one or more sensors (e.g., GPS, accelerometer, light, etc.)
+
+
 	Object-oriented design of application domain model.
 Evaluation Criteria:
 	Clear evidence of the design process
