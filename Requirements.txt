@@ -1,0 +1,5 @@
+Submit and Show:
+	App concept notes: Narratives, sketches, list of use cases, screen layouts, and screen flows;
+	Object-oriented design of application domain model.
+Evaluation Criteria:
+	Clear evidence of the design process
