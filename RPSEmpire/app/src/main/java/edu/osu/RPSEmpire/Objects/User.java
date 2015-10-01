@@ -21,27 +21,27 @@ public class User extends ParseUser {
     public User () {
         // necessary empty constructor for subclassing parse objects
     }
-    public User ( String first_name,
-                  String last_name,
-                  String user_name,
+    public User ( String firstName,
+                  String lastName,
+                  String userName,
                   String password,
                   String email,
                   int points,
-                  String player_id) {
+                  String playerID) {
 
-        setUsername(user_name);
+        setUsername(userName);
         setPassword(password);
         setEmail(email);
-        put(FIRST_NAME, first_name);
-        put(LAST_NAME, last_name);
+        put(FIRST_NAME, firstName);
+        put(LAST_NAME, lastName);
         put(POINTS, points);
-        put(PLAYER_ID, player_id);
+        put(PLAYER_ID, playerID);
     }
 
     public void saveToServer () {
         saveInBackground();
     }
-
+    // getters/setters
     public String getFirstName () {
         return getString(FIRST_NAME);
     }

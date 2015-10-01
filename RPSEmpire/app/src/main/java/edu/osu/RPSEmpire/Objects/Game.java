@@ -21,20 +21,20 @@ public class Game extends ParseObject {
     }
 
     // Constructor which will set all data values
-    public Game ( String player_1_id,
-                  String player_2_id,
-                  int best_of ) {
+    public Game ( String player1ID,
+                  String player2ID,
+                  int bestOf ) {
 
-        put( PLAYER_1_ID, player_1_id);
-        put( PLAYER_2_ID, player_2_id);
-        put( BEST_OF, best_of);
+        put( PLAYER_1_ID, player1ID);
+        put( PLAYER_2_ID, player2ID);
+        put( BEST_OF, bestOf);
     }
 
     public void saveToServer () {
         saveInBackground();
     }
 
-    // getter methods
+    // getters/setters
     public String getPlayer1ID () {
         return getString(PLAYER_1_ID);
     }

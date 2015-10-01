@@ -19,19 +19,19 @@ public class Round extends ParseObject {
         // necessary empty constructor for subclassing parse objects
     }
 
-    public Round ( String game_id,
-                   int round_number ) {
+    public Round ( String gameID,
+                   int roundNumber ) {
 
         super("Round");
-        put(GAME_ID, game_id);
-        put(ROUND_NUMBER, round_number);
+        put(GAME_ID, gameID);
+        put(ROUND_NUMBER, roundNumber);
     }
 
     public void saveToServer () {
         saveInBackground();
     }
 
-    // getter methods
+    // getters/setters
     public String getGameID () {
         return getString(GAME_ID);
     }

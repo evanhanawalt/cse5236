@@ -26,25 +26,25 @@ public class Turn extends ParseObject {
 
 
     public Turn ( String round_id,
-                  String player_1_move,
-                  String player_2_move,
-                  int turn_number,
-                  Date time_start,
-                  Date time_end ) {
+                  String player1Move,
+                  String player2Move,
+                  int turnNumber,
+                  Date timeStart,
+                  Date timeEnd ) {
 
         put(ROUND_ID, round_id);
-        put(PLAYER_1_MOVE, player_1_move);
-        put(PLAYER_2_MOVE, player_2_move);
-        put(TURN_NUMBER, turn_number);
-        put(TIME_START, time_start);
-        put(TIME_END, time_start);
+        put(PLAYER_1_MOVE, player1Move);
+        put(PLAYER_2_MOVE, player2Move);
+        put(TURN_NUMBER, turnNumber);
+        put(TIME_START, timeStart);
+        put(TIME_END, timeEnd);
     }
 
     public void saveToServer () {
         saveInBackground();
     }
 
-    // getter methods
+    // getters/setters
     public String getRoundID () {
         return getString(ROUND_ID);
     }
