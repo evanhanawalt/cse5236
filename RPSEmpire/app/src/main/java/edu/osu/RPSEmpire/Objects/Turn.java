@@ -25,14 +25,14 @@ public class Turn extends ParseObject {
     }
 
 
-    public Turn ( String round_id,
+    public Turn ( String roundID,
                   String player1Move,
                   String player2Move,
                   int turnNumber,
                   Date timeStart,
                   Date timeEnd ) {
 
-        put(ROUND_ID, round_id);
+        put(ROUND_ID, roundID);
         put(PLAYER_1_MOVE, player1Move);
         put(PLAYER_2_MOVE, player2Move);
         put(TURN_NUMBER, turnNumber);
