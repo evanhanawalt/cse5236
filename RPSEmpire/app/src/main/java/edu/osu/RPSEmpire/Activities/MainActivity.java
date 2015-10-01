@@ -1,11 +1,11 @@
-package com.tylor.evan.gamename123.Activities;
+package edu.osu.RPSEmpire.Activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.parse.Parse;
-import com.tylor.evan.gamename123.R;
+import edu.osu.RPSEmpire.R;
 
 public class MainActivity extends AppCompatActivity {
 

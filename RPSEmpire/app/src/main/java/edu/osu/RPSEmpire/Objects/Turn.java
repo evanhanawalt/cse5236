@@ -1,4 +1,4 @@
-package com.tylor.evan.gamename123.Objects;
+package edu.osu.RPSEmpire.Objects;
 
 import com.parse.ParseObject;
 
