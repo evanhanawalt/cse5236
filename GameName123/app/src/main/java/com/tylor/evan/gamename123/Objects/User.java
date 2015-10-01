@@ -9,8 +9,8 @@ import com.parse.ParseException;
  *      models User information
  */
 public class User extends ParseUser {
-    
-    private User( String user_name,
+
+    public User( String user_name,
                  String password,
                  String email,
                  String first_name,
