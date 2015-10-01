@@ -1,4 +1,4 @@
-package com.tylor.evan.gamename123;
+package edu.osu.RPSEmpire.Activities;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

@@ -1,9 +1,11 @@
-package com.tylor.evan.gamename123;
+package edu.osu.RPSEmpire.Activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import com.parse.Parse;
+import edu.osu.RPSEmpire.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -11,6 +13,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // External Database connection
+        Parse.enableLocalDatastore(this);
+        Parse.initialize(this, "xKh6HwE6AZr7lUz9Aq9rAuSdlSa2HhtNgnpZZDXn", "dWf4dOcqTAqXyPs4waIJOVFIYZQJQWzXDRA7kReo");
     }
 
     @Override
