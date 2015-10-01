@@ -6,7 +6,8 @@ import com.parse.ParseClassName;
 @ParseClassName("Player")
 
 /**
- * Created by e on 10/1/15.
+ * Player
+ *      Models either a computer of user controlled player
  */
 public class Player extends ParseObject{
 

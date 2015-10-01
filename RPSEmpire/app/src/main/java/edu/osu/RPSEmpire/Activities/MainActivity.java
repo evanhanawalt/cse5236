@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
         ParseObject.registerSubclass(Round.class);
         ParseObject.registerSubclass(Turn.class);
         ParseObject.registerSubclass(Player.class);
+        ParseObject.registerSubclass(User.class);
         Parse.enableLocalDatastore(this);
         Parse.initialize(this, "xKh6HwE6AZr7lUz9Aq9rAuSdlSa2HhtNgnpZZDXn", "dWf4dOcqTAqXyPs4waIJOVFIYZQJQWzXDRA7kReo");
     }
