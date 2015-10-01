@@ -1,4 +1,4 @@
-package edu.osu.RPSEmpire;
+package edu.osu.RPSEmpire.Activities;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
