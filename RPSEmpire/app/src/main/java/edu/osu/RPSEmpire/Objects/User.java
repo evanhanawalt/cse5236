@@ -18,13 +18,16 @@ public class User extends ParseUser {
     private final String POINTS = "points";
     private final String PLAYER_ID = "player_id";
 
-    public User( String first_name,
-                 String last_name,
-                 String user_name,
-                 String password,
-                 String email,
-                 int points,
-                 String player_id) {
+    public User () {
+        // necessary empty constructor for subclassing parse objects
+    }
+    public User ( String first_name,
+                  String last_name,
+                  String user_name,
+                  String password,
+                  String email,
+                  int points,
+                  String player_id) {
 
         setUsername(user_name);
         setPassword(password);
