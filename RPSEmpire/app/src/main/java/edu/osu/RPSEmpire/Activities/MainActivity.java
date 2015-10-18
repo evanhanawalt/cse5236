@@ -2,6 +2,7 @@ package edu.osu.RPSEmpire.Activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.parse.Parse;
@@ -14,9 +15,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("MainActivity","onCreate Called");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         // External Database connection
         ParseObject.registerSubclass(Game.class);
         ParseObject.registerSubclass(Round.class);
@@ -47,5 +48,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public void login(){
+
+    }
+
+    public void signUp(){
+
     }
 }
