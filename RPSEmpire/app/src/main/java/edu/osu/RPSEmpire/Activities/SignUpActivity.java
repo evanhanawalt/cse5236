@@ -21,11 +21,49 @@ import edu.osu.RPSEmpire.R;
 
 public class SignUpActivity extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("Sign Up", "onCreate called");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
     }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        Log.d("Sign Up", "onStart Called");
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.d("Sign Up", "onResume Called");
+    }
+    @Override
+    public void onPause(){
+        super.onPause();
+        Log.d("Sign Up", "onPause Called");
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        Log.d("Sign Up", "onStop Called");
+    }
+
+    @Override
+    public void onRestart(){
+        super.onRestart();
+        Log.d("Sign Up", "onRestart Called");
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        Log.d("Sign Up", "onDestroy Called");
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -79,6 +117,5 @@ public class SignUpActivity extends AppCompatActivity {
                 });
             }
         });
-
     }
 }
