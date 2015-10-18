@@ -1,10 +1,13 @@
 package edu.osu.RPSEmpire.Activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
 import com.parse.Parse;
 import com.parse.ParseObject;
 
@@ -25,7 +28,42 @@ public class MainActivity extends AppCompatActivity {
         ParseObject.registerSubclass(Player.class);
         ParseObject.registerSubclass(User.class);
         Parse.enableLocalDatastore(this);
-        Parse.initialize(this, "xKh6HwE6AZr7lUz9Aq9rAuSdlSa2HhtNgnpZZDXn", "dWf4dOcqTAqXyPs4waIJOVFIYZQJQWzXDRA7kReo");
+        Parse.initialize(this, "zJSMNb6JcF0qGmNZbOGfQFdbtEEY6VlW5WTxfJ02", "dg6OntuzxLWsj2TyFL2B1ERg0fCrA7EuaUnMsOHE");
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        Log.d("MainActivity", "onStart Called");
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.d("MainActivity", "onResume Called");
+    }
+    @Override
+    public void onPause(){
+        super.onPause();
+        Log.d("MainActivity", "onPause Called");
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        Log.d("MainActivity", "onStop Called");
+    }
+
+    @Override
+    public void onRestart(){
+        super.onRestart();
+        Log.d("MainActivity", "onRestart Called");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("MainActivity", "onDestroy Called");
     }
 
     @Override
@@ -51,11 +89,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void login(){
+    public void login(View view){
 
     }
 
-    public void signUp(){
-
+    public void signUp(View view){
+        Intent i = new Intent(this, SignUpActivity.class);
+        startActivity(i);
     }
 }

@@ -2,6 +2,7 @@ package edu.osu.RPSEmpire.Objects;
 
 import com.parse.ParseObject;
 import com.parse.ParseClassName;
+import com.parse.SaveCallback;
 
 @ParseClassName("Player")
 
@@ -23,6 +24,7 @@ public class Player extends ParseObject{
     public Player( String nickname,
                    boolean isHuman,
                    boolean isRightHanded) {
+
         put(NICKNAME, nickname);
         put(IS_HUMAN, isHuman);
         put(IS_RIGHT_HANDED, isRightHanded);
@@ -30,7 +32,10 @@ public class Player extends ParseObject{
     }
 
     public void saveToServer () {
-        saveInBackground();
+        this.saveInBackground();
+    }
+    public void saveToServer (SaveCallback saveCallback) {
+        this.saveInBackground(saveCallback);
     }
 
     // getters/setters
@@ -43,7 +48,9 @@ public class Player extends ParseObject{
     public boolean isHuman () {
         return getBoolean(IS_HUMAN);
     }
+
     public boolean isRightHanded () {
         return getBoolean(IS_RIGHT_HANDED);
     }
+
 }

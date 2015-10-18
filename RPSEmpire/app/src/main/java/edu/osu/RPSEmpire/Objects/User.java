@@ -2,8 +2,11 @@ package edu.osu.RPSEmpire.Objects;
 
 import com.parse.ParseClassName;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 import com.parse.ParseException;
+
+import edu.osu.RPSEmpire.Activities.SignUpActivity;
 
 @ParseClassName("_User")
 /**
@@ -27,7 +30,7 @@ public class User extends ParseUser {
                   String password,
                   String email,
                   int points,
-                  String playerID) {
+                  Player player) {
 
         setUsername(userName);
         setPassword(password);
@@ -35,11 +38,14 @@ public class User extends ParseUser {
         put(FIRST_NAME, firstName);
         put(LAST_NAME, lastName);
         put(POINTS, points);
-        put(PLAYER_ID, playerID);
+        put(PLAYER_ID, player);
     }
 
     public void saveToServer () {
-        saveInBackground();
+        this.saveInBackground();
+    }
+    public void saveToServer (SignUpCallback signupCallback) {
+        this.signUpInBackground(signupCallback);
     }
     // getters/setters
     public String getFirstName () {
