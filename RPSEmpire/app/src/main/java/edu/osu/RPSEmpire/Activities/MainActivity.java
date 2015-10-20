@@ -90,7 +90,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void login(View view){
-
+        // TODO: implement login
+        // JUST FOR DEBUGGING:
+        Intent i = new Intent(this, GameSetupActivity.class);
+        startActivity(i);
     }
 
     public void signUp(View view){

@@ -24,13 +24,12 @@ public class Turn extends ParseObject {
         // necessary empty constructor for subclassing parse objects
     }
 
-
     public Turn ( String roundID,
-                  String player1Move,
-                  String player2Move,
+                  Player.choice player1Move,
+                  Player.choice player2Move,
                   int turnNumber,
-                  Date timeStart,
-                  Date timeEnd ) {
+                  long timeStart,
+                  long timeEnd ) {
 
         put(ROUND_ID, roundID);
         put(PLAYER_1_MOVE, player1Move);
