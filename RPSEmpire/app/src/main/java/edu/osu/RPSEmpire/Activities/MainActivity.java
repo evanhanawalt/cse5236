@@ -1,6 +1,7 @@
 package edu.osu.RPSEmpire.Activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.view.View;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
+import edu.osu.RPSEmpire.LoginFragment;
 import edu.osu.RPSEmpire.Objects.*;
 import edu.osu.RPSEmpire.R;
 
@@ -90,11 +92,18 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void login(View view){
-
-    }
+        LoginFragment nextFrag= new LoginFragment();
+        this.getFragmentManager().beginTransaction()
+                .replace(R.layout.fragment_login, nextFrag)
+                .addToBackStack(null)
+                .commit();    }
 
     public void signUp(View view){
         Intent i = new Intent(this, SignUpActivity.class);
         startActivity(i);
+    }
+
+    public void onFragmentInteractionListener(Uri uri){
+
     }
 }
