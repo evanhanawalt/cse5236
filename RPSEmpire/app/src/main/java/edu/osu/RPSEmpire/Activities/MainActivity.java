@@ -21,14 +21,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("MainActivity","onCreate Called");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // External Database connection
-        ParseObject.registerSubclass(Game.class);
-        ParseObject.registerSubclass(Round.class);
-        ParseObject.registerSubclass(Turn.class);
-        ParseObject.registerSubclass(Player.class);
-        ParseObject.registerSubclass(User.class);
-        Parse.enableLocalDatastore(this);
-        Parse.initialize(this, "zJSMNb6JcF0qGmNZbOGfQFdbtEEY6VlW5WTxfJ02", "dg6OntuzxLWsj2TyFL2B1ERg0fCrA7EuaUnMsOHE");
+
     }
 
     @Override
