@@ -28,6 +28,10 @@
             android:name=".Activities.GameSetupActivity"
             android:label="@string/title_game_setup" >
         </activity>
+        <activity
+            android:name=".Activities.GameActivity"
+            android:label="@string/title_game" >
+        </activity>
 
     </application>
 

@@ -36,11 +36,23 @@ public class Round extends ParseObject {
         put(ROUND_NUMBER, roundNumber);
     }
 
-    public void createNewTurn(Player.choice player1selection, Player.choice player2selection) {
+    protected void createNewTurn() {
         turnNumber++;
-        turns[turnNumber-1] = new Turn(this.getObjectId(), player1selection, player2selection, turnNumber, turnStartTime, System.nanoTime());
-        turns[turnNumber-1].saveToServer();
+        turns[turnNumber-1] = new Turn(this.getObjectId(), turnNumber, turnStartTime);
         turnStartTime = System.nanoTime();
+    }
+
+    protected void endTurn() {
+        turns[turnNumber-1].endTurn();
+        turns[turnNumber-1].saveToServer();
+    }
+
+    protected void setSelection(int playerNumber, Turn.choice choice) {
+      turns[turnNumber-1].setSelection(playerNumber, choice);
+    }
+
+    protected Turn.choice getSelection(int playerNumber) {
+        return turns[turnNumber-1].getSelection(playerNumber);
     }
 
     public void saveToServer () {

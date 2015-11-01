@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import edu.osu.RPSEmpire.Objects.Game;
 import edu.osu.RPSEmpire.Objects.Player;
+import edu.osu.RPSEmpire.Objects.Turn;
 import edu.osu.RPSEmpire.R;
 
 /**
@@ -22,6 +23,7 @@ public class GameActivity extends AppCompatActivity {
     public int bestOfNumber;
     private int myWins;
     private int opponentWins;
+    private boolean humanOpponent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +34,9 @@ public class GameActivity extends AppCompatActivity {
         player1 = new Player("Test", true, false);
         Intent intent = getIntent();
         bestOfNumber = intent.getIntExtra("bestOfNumber", 2);
-        if (intent.getBooleanExtra("humanOpponent", false)) {
+        humanOpponent = intent.getBooleanExtra("humanOpponent", false);
+
+        if (!humanOpponent) {
             player2 = new Player("CPU", false, false);
         }
         else {
@@ -40,42 +44,44 @@ public class GameActivity extends AppCompatActivity {
         }
 
         //Create Game Objects
-        Game game = new Game(player1, player2, bestOfNumber);
-
+        String p1 = player1.getObjectId();
+        String p2 = player2.getObjectId();
+        Game game = new Game(p1, p2, bestOfNumber);
+        game.startGame();
         setContentView(R.layout.activity_game);
     }
 
     public void throwRock() {
         // TODO: find player object based on login information
-        player1.setSelection(Player.choice.ROCK);
+        game.setSelection(player1.getObjectId(), Turn.choice.ROCK);
         throwSelection();
     }
     public void throwScissors() {
         // TODO: find player object based on login information
-        player1.setSelection(Player.choice.SCISSORS);
+        game.setSelection(player1.getObjectId(), Turn.choice.ROCK);
         throwSelection();
     }
     public void throwPaper() {
         // TODO: find player object based on login information
-        player1.setSelection(Player.choice.PAPER);
+        game.setSelection(player1.getObjectId(), Turn.choice.ROCK);
         throwSelection();
     }
 
     private void throwSelection () {
-        if (player2.getSelection() == null) {
+        if (game.getSelection(player2.getObjectId()) == null) {
             // If you choose first, do nothing and wait
         }
         else {
             // If you choose second, resolve the round
             // TODO: Display player choices
-            Player winner = game.resolveTurn();
+            String winner = game.resolveTurn();
             if (winner != null) {
-                if (winner == player1) {
+                if (winner == player1.getObjectId()) {
                     myWins+=1;
                     TextView myWinsField = (TextView) findViewById(R.id.yourwins_num);
                     myWinsField.setText(Integer.toString(myWins));
                 }
-                if (winner == player2) {
+                if (winner == player2.getObjectId()) {
                     opponentWins+=1;
                     TextView myWinsField = (TextView) findViewById(R.id.oppwins_num);
                     myWinsField.setText(Integer.toString(opponentWins));

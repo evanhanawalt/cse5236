@@ -18,11 +18,10 @@ public class Player extends ParseObject{
     private final String IS_RIGHT_HANDED = "is_right_handed";
 
     // player variables
-    public enum choice { ROCK, PAPER, SCISSORS, QUIT }
-    private choice selection;
     private String nickname;
     private boolean isHuman;
     private boolean isRightHanded;
+
 
     public Player () {
         // necessary empty constructor for subclassing parse objects
@@ -42,16 +41,6 @@ public class Player extends ParseObject{
 
     }
 
-    public void setSelection(choice chosenSelection) { selection = chosenSelection; }
-    public choice getSelection() {
-        if (!isHuman && selection == null) {
-            // Make up a selection
-            // TODO: Make random selection
-            selection = choice.PAPER;
-        }
-        return selection;
-    }
-
     public void saveToServer () {
         this.saveInBackground();
     }
@@ -69,7 +58,6 @@ public class Player extends ParseObject{
     public boolean isHuman () {
         return getBoolean(IS_HUMAN);
     }
-
     public boolean isRightHanded () {
         return getBoolean(IS_RIGHT_HANDED);
     }

@@ -20,27 +20,71 @@ public class Turn extends ParseObject {
     private final String TIME_START = "time_start";
     private final String TIME_END = "time_end";
 
+    // turn variables
+    public enum choice { ROCK, PAPER, SCISSORS, QUIT }
+    private choice player1move;
+    private choice player2move;
+
     public Turn () {
         // necessary empty constructor for subclassing parse objects
     }
 
     public Turn ( String roundID,
-                  Player.choice player1Move,
-                  Player.choice player2Move,
                   int turnNumber,
-                  long timeStart,
-                  long timeEnd ) {
+                  long timeStart) {
+
+        player1move = null;
+        player2move = null;
 
         put(ROUND_ID, roundID);
-        put(PLAYER_1_MOVE, player1Move);
-        put(PLAYER_2_MOVE, player2Move);
         put(TURN_NUMBER, turnNumber);
         put(TIME_START, timeStart);
-        put(TIME_END, timeEnd);
     }
 
     public void saveToServer () {
         saveInBackground();
+    }
+
+    protected void setSelection(int playerNumber, choice chosenSelection)
+    {
+        if (playerNumber == 1) {
+            player1move = chosenSelection;
+        }
+        else if (playerNumber == 2) {
+            player2move = chosenSelection;
+        }
+    }
+
+    protected choice getSelection(int playerNumber) {
+        choice selection = null;
+        if (playerNumber == 1) {
+            selection = player1move;
+        }
+        else if (playerNumber == 2) {
+            selection = player2move;
+        }
+        return selection;
+    }
+
+    protected void endTurn() {
+        long endTime = System.nanoTime();
+        put(PLAYER_1_MOVE, player1move);
+        put(PLAYER_2_MOVE, player2move);
+        put(TIME_END, endTime);
+    }
+
+    public static Game.result determineVictory(choice player1selection, choice player2selection) {
+        if (player1selection == player2selection) {
+            return Game.result.TIE;
+        }
+        else if ((player1selection == choice.ROCK && player2selection == choice.PAPER) ||
+                (player1selection == choice.PAPER && player2selection == choice.SCISSORS) ||
+                (player1selection == choice.SCISSORS && player2selection == choice.ROCK )) {
+            return Game.result.LOSE;
+        }
+        else  {
+            return Game.result.WIN;
+        }
     }
 
     // getters/setters
