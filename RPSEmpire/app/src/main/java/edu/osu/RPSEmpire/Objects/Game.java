@@ -1,9 +1,15 @@
 package edu.osu.RPSEmpire.Objects;
 
 import android.content.Intent;
+import android.util.Log;
 
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseClassName;
+import com.parse.SaveCallback;
+import com.parse.SignUpCallback;
+
+import java.util.ArrayList;
 
 import edu.osu.RPSEmpire.Activities.GameSetupActivity;
 
@@ -22,7 +28,7 @@ public class Game extends ParseObject {
 
     // Game variables
     public enum result { WIN, LOSE, TIE }
-    private Round[] rounds;
+    private ArrayList<Round> rounds;
     private int roundNumber;
     private int bestOfNumber;
     private String player1;
@@ -47,40 +53,50 @@ public class Game extends ParseObject {
         player2 = givenPlayer2;
 
         put(PLAYER_1_ID, player1);
-        put( PLAYER_2_ID, player2);
+        put(PLAYER_2_ID, player2);
         put(BEST_OF, bestOf);
-    }
 
-    public void startGame() {
-        createNewRound();
+        rounds = new ArrayList<Round>();
+
+        this.saveToServer(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+               String id = getObjectId();
+                createNewRound();
+            }
+        });
     }
 
     private void createNewRound() {
         roundNumber++;
-        rounds[roundNumber-1] = new Round(this.getObjectId(), roundNumber);
-        rounds[roundNumber-1].createNewTurn();
+        String id = this.getObjectId();
+        rounds.add(new Round(this.getObjectId(), roundNumber));
     }
 
     public void saveToServer () {
-        saveInBackground();
+        this.saveInBackground();
+    }
+
+    public void saveToServer (SaveCallback saveCallback) {
+        this.saveInBackground(saveCallback);
     }
 
     public void setSelection(String playerID, Turn.choice choice) {
         if (playerID == player1) {
-            rounds[roundNumber-1].setSelection(1, choice);
+            rounds.get(roundNumber-1).setSelection(1, choice);
         }
         else if (playerID == player2) {
-            rounds[roundNumber - 1].setSelection(2, choice);
+            rounds.get(roundNumber-1).setSelection(2, choice);
         }
     }
 
     public Turn.choice getSelection(String playerID) {
         Turn.choice selection = null;
         if (playerID == player1) {
-            selection = rounds[roundNumber-1].getSelection(1);
+            selection = rounds.get(roundNumber-1).getSelection(1);
         }
         else if (playerID == player2) {
-            selection = rounds[roundNumber - 1].getSelection(2);
+            selection = rounds.get(roundNumber-1).getSelection(2);
         }
         return selection;
     }
@@ -89,14 +105,10 @@ public class Game extends ParseObject {
         String winner = null;
         // Make sure both players have made a choice
         if (getSelection(player1) != null && getSelection(player2) != null) {
-            rounds[rounds.length - 1].endTurn();
             if (getSelection(player1) != getSelection(player2)) {
                 // There is a winner or a loser
                 winner = resolveRound();
             }
-
-            // Reset turn variables
-            rounds[rounds.length - 1].createNewTurn();
         }
         return winner;
     }
@@ -121,7 +133,8 @@ public class Game extends ParseObject {
         }
 
         // End round and save it to server
-        rounds[roundNumber-1].saveToServer();
+        rounds.get(rounds.size()-1).endTurn();
+        rounds.get(roundNumber-1).saveToServer();
         createNewRound();
         return winner;
     }

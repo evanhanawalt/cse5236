@@ -21,7 +21,7 @@ public class Turn extends ParseObject {
     private final String TIME_END = "time_end";
 
     // turn variables
-    public enum choice { ROCK, PAPER, SCISSORS, QUIT }
+    public static enum choice { ROCK, PAPER, SCISSORS, QUIT }
     private choice player1move;
     private choice player2move;
 
@@ -42,7 +42,7 @@ public class Turn extends ParseObject {
     }
 
     public void saveToServer () {
-        saveInBackground();
+        this.saveInBackground();
     }
 
     protected void setSelection(int playerNumber, choice chosenSelection)
@@ -68,9 +68,10 @@ public class Turn extends ParseObject {
 
     protected void endTurn() {
         long endTime = System.nanoTime();
-        put(PLAYER_1_MOVE, player1move);
-        put(PLAYER_2_MOVE, player2move);
+        put(PLAYER_1_MOVE, player1move.hashCode());
+        put(PLAYER_2_MOVE, player2move.hashCode());
         put(TIME_END, endTime);
+        this.saveToServer();
     }
 
     public static Game.result determineVictory(choice player1selection, choice player2selection) {
