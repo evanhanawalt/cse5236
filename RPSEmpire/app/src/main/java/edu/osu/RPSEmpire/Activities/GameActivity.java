@@ -3,12 +3,20 @@ package edu.osu.RPSEmpire.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
+
+import com.parse.ParseException;
+import com.parse.SaveCallback;
+import com.parse.SignUpCallback;
 
 import edu.osu.RPSEmpire.Objects.Game;
 import edu.osu.RPSEmpire.Objects.Player;
+import edu.osu.RPSEmpire.Objects.Turn;
+import edu.osu.RPSEmpire.Objects.User;
 import edu.osu.RPSEmpire.R;
 
 /**
@@ -22,67 +30,101 @@ public class GameActivity extends AppCompatActivity {
     public int bestOfNumber;
     private int myWins;
     private int opponentWins;
+    private boolean humanOpponent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_game);
+        startGame();
+    }
+
+    protected void startGame() {
 
         // Create Player Objects
         // TODO: pull player1 information from login information
+
+        String player1id;
+        String player2id;
+
         player1 = new Player("Test", true, false);
+        player1.saveToServer();
+
         Intent intent = getIntent();
         bestOfNumber = intent.getIntExtra("bestOfNumber", 2);
-        if (intent.getBooleanExtra("humanOpponent", false)) {
+        humanOpponent = intent.getBooleanExtra("humanOpponent", false);
+
+        if (!humanOpponent) {
             player2 = new Player("CPU", false, false);
+            player2.saveToServer();
         }
         else {
             // TODO: pull player2 information from connected partner
         }
 
         //Create Game Objects
-        Game game = new Game(player1, player2, bestOfNumber);
 
-        setContentView(R.layout.activity_game);
+        while ( player1.getObjectId() == null || player2.getObjectId() == null ) {
+            // Wait until both callbacks finish
+        }
+
+        game = new Game(player1.getObjectId(), player2.getObjectId(), bestOfNumber);
+
     }
 
-    public void throwRock() {
+    public void throwRock(View view) {
         // TODO: find player object based on login information
-        player1.setSelection(Player.choice.ROCK);
+        game.setSelection(player1.getObjectId(), Turn.choice.ROCK);
         throwSelection();
     }
-    public void throwScissors() {
+    public void throwScissors(View view) {
         // TODO: find player object based on login information
-        player1.setSelection(Player.choice.SCISSORS);
+        game.setSelection(player1.getObjectId(), Turn.choice.SCISSORS);
         throwSelection();
     }
-    public void throwPaper() {
+    public void throwPaper(View view) {
         // TODO: find player object based on login information
-        player1.setSelection(Player.choice.PAPER);
+        game.setSelection(player1.getObjectId(), Turn.choice.PAPER);
+        throwSelection();
+    }
+    public void quit(View view) {
+        game.setSelection(player1.getObjectId(), Turn.choice.QUIT);
         throwSelection();
     }
 
     private void throwSelection () {
-        if (player2.getSelection() == null) {
-            // If you choose first, do nothing and wait
+        if (game.getSelection(player2.getObjectId()) == null) {
+            // If you choose first, do nothing and wait unless opponent is computer
+            if (!humanOpponent) {
+                // TODO: choose randomly
+                game.setSelection(player2.getObjectId(), Turn.choice.ROCK);
+                throwSelection();
+            }
         }
         else {
             // If you choose second, resolve the round
             // TODO: Display player choices
-            Player winner = game.resolveTurn();
+            String winner = game.resolveTurn();
             if (winner != null) {
-                if (winner == player1) {
+                if (winner == player1.getObjectId()) {
                     myWins+=1;
                     TextView myWinsField = (TextView) findViewById(R.id.yourwins_num);
                     myWinsField.setText(Integer.toString(myWins));
                 }
-                if (winner == player2) {
+                if (winner == player2.getObjectId()) {
                     opponentWins+=1;
                     TextView myWinsField = (TextView) findViewById(R.id.oppwins_num);
                     myWinsField.setText(Integer.toString(opponentWins));
                 }
+
+
+                if (myWins >= bestOfNumber) { resolveGame(player1); }
+                else if (opponentWins >= bestOfNumber) { resolveGame(player2); }
             }
-            if (myWins >= bestOfNumber) { resolveGame(player1); }
-            else if (opponentWins >= bestOfNumber) { resolveGame(player2); }
+            else {
+                // TODO: Tied game message
+            }
         }
     }
 
@@ -102,9 +144,5 @@ public class GameActivity extends AppCompatActivity {
         // If player does not want to play again, return to game setup page.
         Intent i = new Intent(this, GameSetupActivity.class);
         startActivity(i);
-    }
-
-    public void quit() {
-        // TODO: implement game ending early and player quitting AND opponent quitting
     }
 }

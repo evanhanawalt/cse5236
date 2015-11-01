@@ -1,8 +1,12 @@
 package edu.osu.RPSEmpire.Objects;
 
+import com.parse.ParseException;
 import com.parse.ParseObject;
 
 import com.parse.ParseClassName;
+import com.parse.SaveCallback;
+
+import java.util.ArrayList;
 
 @ParseClassName("Round")
 /**
@@ -16,7 +20,7 @@ public class Round extends ParseObject {
     private final String ROUND_NUMBER = "round_number";
 
     // Round variables
-    private Turn[] turns;
+    private ArrayList<Turn> turns;
     private int turnNumber;
     private long turnStartTime;
 
@@ -34,18 +38,44 @@ public class Round extends ParseObject {
 
         put(GAME_ID, gameID);
         put(ROUND_NUMBER, roundNumber);
+
+        turns = new ArrayList<>();
+        this.saveToServer(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                String id = getObjectId();
+                createNewTurn();
+            }
+        });
     }
 
-    public void createNewTurn(Player.choice player1selection, Player.choice player2selection) {
+    protected void createNewTurn() {
         turnNumber++;
-        turns[turnNumber-1] = new Turn(this.getObjectId(), player1selection, player2selection, turnNumber, turnStartTime, System.nanoTime());
-        turns[turnNumber-1].saveToServer();
+        turns.add(new Turn(this.getObjectId(), turnNumber, turnStartTime));
         turnStartTime = System.nanoTime();
     }
 
-    public void saveToServer () {
-        saveInBackground();
+    protected void endTurn() {
+        turns.get(turnNumber-1).endTurn();
+        turns.get(turnNumber-1).saveToServer();
     }
+
+    protected void setSelection(int playerNumber, Turn.choice choice) {
+        turns.get(turnNumber-1).setSelection(playerNumber, choice);
+    }
+
+    protected Turn.choice getSelection(int playerNumber) {
+        return turns.get(turnNumber-1).getSelection(playerNumber);
+    }
+
+    public void saveToServer () {
+        this.saveInBackground();
+    }
+
+    public void saveToServer (SaveCallback saveCallback) {
+        this.saveInBackground(saveCallback);
+    }
+
 
     // getters/setters
     public String getGameID () {
