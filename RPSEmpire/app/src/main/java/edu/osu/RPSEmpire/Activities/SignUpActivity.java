@@ -107,15 +107,26 @@ public class SignUpActivity extends AppCompatActivity {
         newPlayer.saveToServer(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                Log.d("Sign Up", "Saved Player object to Server");
+                if (e == null) {
+                    Log.d("Sign Up", "Saved Player object to Server");
+                } else {
+                    e.printStackTrace();
+                }
                 User newUser = new User(firstName, lastName, userName, password, email, points, newPlayer);
                 newUser.saveToServer(new SignUpCallback() {
                     @Override
                     public void done(ParseException e) {
-                        Log.d("Sign up", "Signed up user");
+                        if (e == null) {
+                            Log.d("Sign up", "Signed up user");
+                            finish();
+                        } else {
+                            e.printStackTrace();
+                        }
                     }
                 });
             }
         });
+
+
     }
 }

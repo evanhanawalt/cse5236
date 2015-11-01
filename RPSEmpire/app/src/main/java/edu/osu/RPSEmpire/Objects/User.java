@@ -41,6 +41,10 @@ public class User extends ParseUser {
         put(PLAYER_ID, player);
     }
 
+    public static User getCurrentUser(){
+        return (User) ParseUser.getCurrentUser();
+    }
+
     public void saveToServer () {
         this.saveInBackground();
     }

@@ -11,14 +11,43 @@
         android:onClick="login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Log In"
+        android:text="@string/login"
         android:id="@+id/log_in" />
 
     <Button
         android:onClick="signUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sign Up"
+        android:text="@string/signup"
         android:id="@+id/sign_up" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/options"
+        android:onClick="options"
+        android:id="@+id/options" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/about"
+        android:onClick="about"
+        android:id="@+id/about" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/statistics"
+        android:onClick="statistics"
+        android:id="@+id/statistics" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/achievements"
+        android:onClick="achievements"
+        android:id="@+id/achievements" />
+
 
 </LinearLayout>

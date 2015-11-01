@@ -7,9 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
-import com.parse.Parse;
-import com.parse.ParseObject;
+import android.widget.Button;
 
 import edu.osu.RPSEmpire.Objects.*;
 import edu.osu.RPSEmpire.R;
@@ -34,7 +32,23 @@ public class MainActivity extends AppCompatActivity {
     public void onResume(){
         super.onResume();
         Log.d("MainActivity", "onResume Called");
+        Button signup_button = (Button) findViewById(R.id.sign_up);
+        Button statistics_button = (Button) findViewById(R.id.statistics);
+        Button options_button = (Button) findViewById(R.id.options);
+        Button achievements_button = (Button) findViewById(R.id.achievements);
+        if (User.getCurrentUser() != null){
+            signup_button.setVisibility(View.INVISIBLE);
+            statistics_button.setVisibility(View.VISIBLE);
+            options_button.setVisibility(View.VISIBLE);
+            achievements_button.setVisibility(View.VISIBLE);
+        } else {
+            signup_button.setVisibility(View.VISIBLE);
+            statistics_button.setVisibility(View.INVISIBLE);
+            options_button.setVisibility(View.INVISIBLE);
+            achievements_button.setVisibility(View.INVISIBLE);
+        }
     }
+
     @Override
     public void onPause(){
         super.onPause();
@@ -89,8 +103,33 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
     }
 
+
+
     public void signUp(View view){
         Intent i = new Intent(this, SignUpActivity.class);
         startActivity(i);
     }
+
+
+    public void about(View view){
+        Intent i = new Intent(this, AboutActivity.class);
+        startActivity(i);
+    }
+
+    public void options(View view){
+        Intent i = new Intent(this, OptionsActivity.class);
+        startActivity(i);
+    }
+
+    public void statistics(View view){
+        Intent i = new Intent(this, StatisticsActivity.class);
+        startActivity(i);
+    }
+
+    public void achievements(View view){
+        Intent i = new Intent(this, AchievementsActivity.class);
+        startActivity(i);
+    }
+
+
 }

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="edu.osu.RPSEmpire">
+    package="edu.osu.RPSEmpire" >
 
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -10,7 +12,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <activity
             android:name=".Activities.MainActivity"
             android:label="@string/app_name" >
@@ -28,7 +30,38 @@
             android:name=".Activities.GameSetupActivity"
             android:label="@string/title_game_setup" >
         </activity>
-
+        <activity
+            android:name=".Activities.AboutActivity"
+            android:label="@string/title_activity_about"
+            android:parentActivityName=".Activities.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.osu.RPSEmpire.Activities.MainActivity" />
+        </activity>
+        <activity
+            android:name=".Activities.OptionsActivity"
+            android:label="@string/title_activity_options"
+            android:parentActivityName=".Activities.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.osu.RPSEmpire.Activities.MainActivity" />
+        </activity>
+        <activity
+            android:name=".Activities.StatisticsActivity"
+            android:label="@string/title_activity_statistics"
+            android:parentActivityName=".Activities.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.osu.RPSEmpire.Activities.MainActivity" />
+        </activity>
+        <activity
+            android:name=".Activities.AchievementsActivity"
+            android:label="@string/title_activity_achievements"
+            android:parentActivityName=".Activities.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.osu.RPSEmpire.Activities.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

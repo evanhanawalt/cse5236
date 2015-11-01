@@ -1,6 +1,7 @@
 package edu.osu.RPSEmpire.Activities;
 
 import android.app.Application;
+import android.bluetooth.BluetoothSocket;
 import android.os.Bundle;
 
 import com.parse.Parse;
@@ -16,6 +17,17 @@ import edu.osu.RPSEmpire.Objects.User;
  * Created by e on 10/21/15.
  */
 public class ParseActivity extends Application {
+
+    private BluetoothSocket mSocket;
+
+    public BluetoothSocket getmSocket() {
+        return mSocket;
+    }
+
+    public void setmSocket(BluetoothSocket socket) {
+        this.mSocket = socket;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
