@@ -155,7 +155,7 @@ public class GameActivity extends AppCompatActivity {
             }
             else {
                 message = "You threw " + Turn.ChoiceToString(game.getSelection(player1Id));
-                message += ", and your opponent threw " + Turn.ChoiceToString(game.getSelection(player1Id));
+                message += ", and your opponent threw " + Turn.ChoiceToString(game.getSelection(player2Id));
                 message += ". ";
 
                 String winner = game.resolveTurn();
@@ -192,6 +192,9 @@ public class GameActivity extends AppCompatActivity {
                     }
                 } else {
                     // Display tie message
+                    if (!humanOpponent) {
+                        game.setSelection(player2Id, null);
+                    }
                     message += "The turn was a tie!";
                     AlertDialog dialog = alertDialog.create();
                     dialog.setTitle("The turn was a tie!");

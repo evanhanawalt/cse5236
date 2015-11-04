@@ -6,11 +6,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+
+import java.util.List;
 
 import edu.osu.RPSEmpire.Objects.User;
 import edu.osu.RPSEmpire.R;
@@ -24,23 +27,24 @@ public class StatisticsActivity extends AppCompatActivity {
 
         // EXAMPLE STATISTICS PULL
 
-        final int totalGames = 0;/*
-
-        ParseQuery<ParseObject> query = ParseObject.getQuery("Game");
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
         query.whereEqualTo("player_1_id", User.getCurrentUser().get("player_id"));
-        query.getInBackground(User.getCurrentUser().getObjectId(), new GetCallback<ParseUser>() {
+        query.findInBackground(new FindCallback<ParseObject>() {
             @Override
-            public void done(ParseUser user, ParseException e) {
+            public void done(List<ParseObject> objects, ParseException e) {
                 if (e == null) {
-
+                    setTotalGames(objects.size());
                 } else {
                     // Problem fetching user's player object
                 }
             }
         });
+    }
+
+    private void setTotalGames(int totalGames) {
 
         TextView textField = (TextView) findViewById(R.id.stat_text);
-        textField.setText("Number of games played: " + Integer.ToString(totalGames));*/
+        textField.setText("Number of games played: " + Integer.toString(totalGames));
     }
 
     @Override
