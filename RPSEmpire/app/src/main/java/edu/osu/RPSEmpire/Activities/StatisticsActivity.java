@@ -4,7 +4,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
+import edu.osu.RPSEmpire.Objects.User;
 import edu.osu.RPSEmpire.R;
 
 public class StatisticsActivity extends AppCompatActivity {
@@ -13,6 +21,26 @@ public class StatisticsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
+
+        // EXAMPLE STATISTICS PULL
+
+        final int totalGames = 0;/*
+
+        ParseQuery<ParseObject> query = ParseObject.getQuery("Game");
+        query.whereEqualTo("player_1_id", User.getCurrentUser().get("player_id"));
+        query.getInBackground(User.getCurrentUser().getObjectId(), new GetCallback<ParseUser>() {
+            @Override
+            public void done(ParseUser user, ParseException e) {
+                if (e == null) {
+
+                } else {
+                    // Problem fetching user's player object
+                }
+            }
+        });
+
+        TextView textField = (TextView) findViewById(R.id.stat_text);
+        textField.setText("Number of games played: " + Integer.ToString(totalGames));*/
     }
 
     @Override

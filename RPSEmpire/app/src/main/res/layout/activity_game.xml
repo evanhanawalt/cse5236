@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1">
+    android:weightSum="1"
+    android:gravity="center_horizontal">
 
     <TextView
         android:layout_width="wrap_content"
@@ -17,45 +18,54 @@
         android:id="@+id/yourwins_num" />
 
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="0.83">
+        android:orientation="horizontal"
+        android:layout_width="152dp"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal">
 
-        <Button
-            android:onClick="throwRock"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Rock"
-            android:id="@+id/button" />
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.83"
+            android:foregroundGravity="center_vertical"
+            android:gravity="center_horizontal">
 
-        <Button
-            android:onClick="throwPaper"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Paper"
-            android:id="@+id/button2" />
+            <Button
+                android:onClick="throwRock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rock"
+                android:id="@+id/button" />
 
-        <Button
-            android:onClick="throwScissors"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Scissors"
-            android:id="@+id/button3" />
+            <Button
+                android:onClick="throwPaper"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/paper"
+                android:id="@+id/button2" />
 
-        <Button
-            android:onClick="quit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Quit"
-            android:id="@+id/button4" />
+            <Button
+                android:onClick="throwScissors"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/scissors"
+                android:id="@+id/button3" />
+
+            <Button
+                android:onClick="quit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/quit"
+                android:id="@+id/button4" />
+        </LinearLayout>
     </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Opponent&apos;s Wins:"
+        android:text="Opponent&apos;s Wins: "
         android:id="@+id/oppwins_text" />
 
     <TextView

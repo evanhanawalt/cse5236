@@ -40,13 +40,10 @@ public class Round extends ParseObject {
         put(ROUND_NUMBER, roundNumber);
 
         turns = new ArrayList<>();
-        this.saveToServer(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                String id = getObjectId();
-                createNewTurn();
-            }
-        });
+        saveToServer();
+
+        String id = getObjectId();
+        createNewTurn();
     }
 
     protected void createNewTurn() {
@@ -69,7 +66,12 @@ public class Round extends ParseObject {
     }
 
     public void saveToServer () {
-        this.saveInBackground();
+        try {
+            save();
+        }
+        catch (ParseException e) {
+            // Something wrong with connection to server
+        }
     }
 
     public void saveToServer (SaveCallback saveCallback) {

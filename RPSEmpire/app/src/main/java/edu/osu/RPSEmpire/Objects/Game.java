@@ -74,7 +74,12 @@ public class Game extends ParseObject {
     }
 
     public void saveToServer () {
-        this.saveInBackground();
+        try {
+            save();
+        }
+        catch (ParseException e) {
+            // Something wrong with connection to server
+        }
     }
 
     public void saveToServer (SaveCallback saveCallback) {

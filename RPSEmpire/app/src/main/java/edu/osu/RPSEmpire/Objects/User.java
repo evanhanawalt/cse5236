@@ -29,8 +29,7 @@ public class User extends ParseUser {
                   String userName,
                   String password,
                   String email,
-                  int points,
-                  Player player) {
+                  int points) {
 
         setUsername(userName);
         setPassword(password);
@@ -38,9 +37,9 @@ public class User extends ParseUser {
         put(FIRST_NAME, firstName);
         put(LAST_NAME, lastName);
         put(POINTS, points);
-        put(PLAYER_ID, player);
     }
 
+    public void setPlayer(String playerID) { put(PLAYER_ID, playerID); saveInBackground(); }
     public static User getCurrentUser(){
         return (User) ParseUser.getCurrentUser();
     }

@@ -1,5 +1,7 @@
 package edu.osu.RPSEmpire.Activities;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,11 +11,16 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
 import org.w3c.dom.Text;
+
+import java.util.List;
 
 import edu.osu.RPSEmpire.Objects.Player;
 import edu.osu.RPSEmpire.Objects.User;
@@ -21,49 +28,15 @@ import edu.osu.RPSEmpire.R;
 
 public class SignUpActivity extends AppCompatActivity {
 
+    AlertDialog.Builder alertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("Sign Up", "onCreate called");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        // Setup Alert Dialogues
+        alertDialog = new AlertDialog.Builder(this);
     }
-
-    @Override
-    public void onStart(){
-        super.onStart();
-        Log.d("Sign Up", "onStart Called");
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-        Log.d("Sign Up", "onResume Called");
-    }
-    @Override
-    public void onPause(){
-        super.onPause();
-        Log.d("Sign Up", "onPause Called");
-    }
-
-    @Override
-    public void onStop(){
-        super.onStop();
-        Log.d("Sign Up", "onStop Called");
-    }
-
-    @Override
-    public void onRestart(){
-        super.onRestart();
-        Log.d("Sign Up", "onRestart Called");
-    }
-
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-        Log.d("Sign Up", "onDestroy Called");
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -89,7 +62,6 @@ public class SignUpActivity extends AppCompatActivity {
 
     public void signUp(View view){
 
-        Log.d("Sign Up", "Sign up button pressed");
         TextView firstNameField = (TextView) findViewById(R.id.first_name);
         TextView lastNameField = (TextView) findViewById(R.id.last_name);
         TextView nicknameField = (TextView) findViewById(R.id.nickname);
@@ -100,33 +72,79 @@ public class SignUpActivity extends AppCompatActivity {
         final String firstName = firstNameField.getText().toString();
         final String lastName = lastNameField.getText().toString();
         final String password = passwordField.getText().toString();
+        final String confirmPassword = confirmPasswordField.getText().toString();
         final String email = emailField.getText().toString();
-        final String userName = email;
+        final String userName = nicknameField.getText().toString();
+        final boolean isRightHanded = isRightHandedField.isChecked();
         final int points = 0;
-        final Player newPlayer = new Player(nicknameField.getText().toString(), true, isRightHandedField.isChecked());
-        newPlayer.saveToServer(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    Log.d("Sign Up", "Saved Player object to Server");
-                } else {
-                    e.printStackTrace();
-                }
-                User newUser = new User(firstName, lastName, userName, password, email, points, newPlayer);
-                newUser.saveToServer(new SignUpCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e == null) {
-                            Log.d("Sign up", "Signed up user");
-                            finish();
-                        } else {
-                            e.printStackTrace();
-                        }
+
+        if (password.compareTo("") == 0) {
+            // password is a required field
+            AlertDialog dialog = alertDialog.create();
+            dialog.setTitle("Error Signing Up");
+            dialog.setMessage("Error: the password field cannot be left empty.");
+            dialog.show();
+        }
+        else if (confirmPassword.compareTo("") == 0) {
+            // confirm password is a required field
+            AlertDialog dialog = alertDialog.create();
+            dialog.setTitle("Error Signing Up");
+            dialog.setMessage("Error: the confirm password field cannot be left empty.");
+            dialog.show();
+        }
+        else if (password.compareTo(confirmPassword) != 0) {
+            // password fields must match
+            AlertDialog dialog = alertDialog.create();
+            dialog.setTitle("Error Signing Up");
+            dialog.setMessage("Error: the password field's content much match the confirm password field's content.");
+            dialog.show();
+        }
+        else if (userName.compareTo("") == 0) {
+            // userName is a required field
+            AlertDialog dialog = alertDialog.create();
+            dialog.setTitle("Error Signing Up");
+            dialog.setMessage("Error: the user name field cannot be left empty.");
+            dialog.show();
+        }
+        else if (email.compareTo("") == 0) {
+            // userName is a required field
+            AlertDialog dialog = alertDialog.create();
+            dialog.setTitle("Error Signing Up");
+            dialog.setMessage("Error: the email name field cannot be left empty.");
+            dialog.show();
+        }
+        else {
+            final User newUser = new User(firstName, lastName, userName, password, email, points);
+            newUser.saveToServer(new SignUpCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        // Create new player object and provide user with information
+                        final Player newPlayer = new Player(userName, true, isRightHanded);
+                        newPlayer.saveToServer(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e == null) {
+                                    newUser.setPlayer(newPlayer.getObjectId());
+                                    try {
+                                        ParseUser.logIn(userName, password);
+                                        finish();
+                                    }
+                                    catch (ParseException e1) {
+                                        e1.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+                    } else {
+                        // Display error message explaining to user why sign up failed
+                        AlertDialog dialog = alertDialog.create();
+                        dialog.setTitle("Error Signing Up");
+                        dialog.setMessage("Error: " + e.getMessage() + ".");
+                        dialog.show();
                     }
-                });
-            }
-        });
-
-
+                }
+            });
+        }
     }
 }

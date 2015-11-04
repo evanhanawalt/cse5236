@@ -1,5 +1,6 @@
 package edu.osu.RPSEmpire.Objects;
 
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import java.util.Date;
 
@@ -42,7 +43,12 @@ public class Turn extends ParseObject {
     }
 
     public void saveToServer () {
-        this.saveInBackground();
+        try {
+            save();
+        }
+        catch (ParseException e) {
+            // Something wrong with connection to server
+        }
     }
 
     protected void setSelection(int playerNumber, choice chosenSelection)
@@ -75,7 +81,13 @@ public class Turn extends ParseObject {
     }
 
     public static Game.result determineVictory(choice player1selection, choice player2selection) {
-        if (player1selection == player2selection) {
+        if (player1selection == choice.QUIT) {
+            return Game.result.LOSE;
+        }
+        else if (player2selection == choice.QUIT) {
+            return Game.result.WIN;
+        }
+        else if (player1selection == player2selection) {
             return Game.result.TIE;
         }
         else if ((player1selection == choice.ROCK && player2selection == choice.PAPER) ||
@@ -86,6 +98,13 @@ public class Turn extends ParseObject {
         else  {
             return Game.result.WIN;
         }
+    }
+
+    public static String ChoiceToString(choice selection) {
+        if (selection == choice.ROCK) { return "rock"; }
+        else if (selection == choice.PAPER) { return "paper"; }
+        else if (selection == choice.SCISSORS) { return "scissors"; }
+        else  { return "quit"; }
     }
 
     // getters/setters

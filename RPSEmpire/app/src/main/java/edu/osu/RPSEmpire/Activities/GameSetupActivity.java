@@ -1,5 +1,6 @@
 package edu.osu.RPSEmpire.Activities;
 
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
@@ -31,8 +32,8 @@ import edu.osu.RPSEmpire.R;
 
 public class GameSetupActivity extends AppCompatActivity {
 
+    AlertDialog.Builder alertDialog;
     private int bestOfNumber;
-    private Player opponent;
     private boolean humanOpponent;
     private int REQUEST_ENABLE_BT = 1;
     private UUID APP_UUID = UUID.fromString("361fe410-80d5-11e5-8bcf-feff819cdc9f");
@@ -41,7 +42,6 @@ public class GameSetupActivity extends AppCompatActivity {
     private InputStream inStream;
     private OutputStream outStream;
     private String opponentID;
-
 
     private final BroadcastReceiver mBluetoothReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -202,44 +202,26 @@ public class GameSetupActivity extends AppCompatActivity {
     @Override
     public void onStart(){
         super.onStart();
-        Log.d("GameSetupActivity", "onStart Called");
+        // Setup Alert Dialogues
+        alertDialog = new AlertDialog.Builder(this);
     }
 
     @Override
     public void onResume(){
         super.onResume();
-        Log.d("GameSetupActivity", "onResume Called");
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothDevice.ACTION_FOUND);
         registerReceiver(mBluetoothReceiver, filter);
     }
+
     @Override
     public void onPause(){
         super.onPause();
-        Log.d("GameSetupActivity", "onPause Called");
         unregisterReceiver(mBluetoothReceiver);
     }
 
-    @Override
-    public void onStop(){
-        super.onStop();
-        Log.d("GameSetupActivity", "onStop Called");
-    }
-
-    @Override
-    public void onRestart(){
-        super.onRestart();
-        Log.d("GameSetupActivity", "onRestart Called");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d("GameSetupActivity", "onDestroy Called");
-    }
     public void back(View view) {
-        Intent i = new Intent(this, MainActivity.class);
-        startActivity(i);
+        finish();
     }
 
     public void multiPlayerGame(View view) {
@@ -255,6 +237,7 @@ public class GameSetupActivity extends AppCompatActivity {
     public void singlePlayerGame(View view) {
         // TODO: set up different AI player connections
         humanOpponent = false;
+        opponentID = "3euXx89GXZ"; // Hardcoded ID in database for the CPU opponent
         startGame(view);
     }
 
@@ -266,18 +249,21 @@ public class GameSetupActivity extends AppCompatActivity {
             bestOfNumber = Integer.parseInt(bestOfString);
         }
         catch(NumberFormatException nfe) {
-            // TODO: Diplay error message
             bestOfNumber = -1;
         }
 
         if (bestOfNumber < 1 || bestOfNumber > 16) {
-            // TODO: Diplay beyond min/max number of games error message
+            AlertDialog dialog = alertDialog.create();
+            dialog.setTitle("Error Starting Game");
+            dialog.setMessage("Error: please enter an integer number between 1 and 16 for the best-of number.");
+            dialog.show();
             bestOfNumber = -1;
         }
         else {
             Intent i = new Intent(this, GameActivity.class);
             i.putExtra("bestOfNumber", bestOfNumber);
             i.putExtra("humanOpponent", humanOpponent);
+            i.putExtra("player2Id", opponentID);
             startActivity(i);
         }
     }
