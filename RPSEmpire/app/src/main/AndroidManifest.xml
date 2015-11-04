@@ -31,13 +31,12 @@
             android:label="@string/title_game_setup" >
         </activity>
         <activity
-
             android:name=".Activities.AboutActivity"
             android:label="@string/title_activity_about"
             android:parentActivityName=".Activities.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.osu.RPSEmpire.Activities.MainActivity" />
+                android:value="edu.osu.RPSEmpire.Activities.HomeActivity" />
         </activity>
         <activity
             android:name=".Activities.OptionsActivity"
@@ -45,7 +44,7 @@
             android:parentActivityName=".Activities.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.osu.RPSEmpire.Activities.MainActivity" />
+                android:value="edu.osu.RPSEmpire.Activities.HomeActivity" />
         </activity>
         <activity
             android:name=".Activities.StatisticsActivity"
@@ -53,7 +52,7 @@
             android:parentActivityName=".Activities.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.osu.RPSEmpire.Activities.MainActivity" />
+                android:value="edu.osu.RPSEmpire.Activities.HomeActivity" />
         </activity>
         <activity
             android:name=".Activities.AchievementsActivity"
@@ -61,13 +60,17 @@
             android:parentActivityName=".Activities.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.osu.RPSEmpire.Activities.MainActivity" />
-
+                android:value="edu.osu.RPSEmpire.Activities.HomeActivity" />
         </activity>
         <activity
             android:name=".Activities.GameActivity"
             android:label="@string/title_game" />
+        <activity
+            android:name=".Activities.HomeActivity"
+            android:label="@string/title_activity_home"
+            android:parentActivityName=".Activities.MainActivity" >
 
+        </activity>
     </application>
 
 </manifest>

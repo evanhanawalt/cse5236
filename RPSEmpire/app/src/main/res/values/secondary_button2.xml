@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="secondary_button2" parent="secondary_button">
+        <item name="android:useDefaultMargins">true</item>
+            <item name="android:background">#e8e8e7</item>
+    </style>
+</resources>

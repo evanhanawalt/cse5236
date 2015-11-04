@@ -8,6 +8,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import java.io.InputStream;
 
 import edu.osu.RPSEmpire.Objects.*;
 import edu.osu.RPSEmpire.R;
@@ -26,27 +29,15 @@ public class MainActivity extends AppCompatActivity {
     public void onStart(){
         super.onStart();
         Log.d("MainActivity", "onStart Called");
+        if(User.getCurrentUser() != null){
+            startHomeActivity();
+        }
     }
 
     @Override
     public void onResume(){
         super.onResume();
         Log.d("MainActivity", "onResume Called");
-        Button signup_button = (Button) findViewById(R.id.sign_up);
-        Button statistics_button = (Button) findViewById(R.id.statistics);
-        Button options_button = (Button) findViewById(R.id.options);
-        Button achievements_button = (Button) findViewById(R.id.achievements);
-        if (User.getCurrentUser() != null){
-            signup_button.setVisibility(View.INVISIBLE);
-            statistics_button.setVisibility(View.VISIBLE);
-            options_button.setVisibility(View.VISIBLE);
-            achievements_button.setVisibility(View.VISIBLE);
-        } else {
-            signup_button.setVisibility(View.VISIBLE);
-            statistics_button.setVisibility(View.INVISIBLE);
-            options_button.setVisibility(View.INVISIBLE);
-            achievements_button.setVisibility(View.INVISIBLE);
-        }
     }
 
     @Override
@@ -96,40 +87,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void login(View view){
-        // TODO: implement login
-        // JUST FOR DEBUGGING:
-        Intent i = new Intent(this, GameSetupActivity.class);
-        startActivity(i);
-    }
-
-
 
     public void signUp(View view){
         Intent i = new Intent(this, SignUpActivity.class);
-        startActivity(i);
+        startActivityForResult(i, User.SIGN_UP);
     }
 
 
-    public void about(View view){
-        Intent i = new Intent(this, AboutActivity.class);
+    public void startHomeActivity(){
+        Intent i = new Intent(this, HomeActivity.class);
         startActivity(i);
     }
 
-    public void options(View view){
-        Intent i = new Intent(this, OptionsActivity.class);
-        startActivity(i);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch ( requestCode ) {
+            case User.SIGN_UP:
+                if (resultCode == RESULT_OK ){
+                    startHomeActivity();
+                    Log.d("MainActivity", "Sign Up Returned with RESULT_OK");
+                } else {
+                    Log.d("MainActivity", "Sign Up Returned with RESULT_CANCELED");
+                    Toast.makeText(MainActivity.this, "Sign Up Failed", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
     }
-
-    public void statistics(View view){
-        Intent i = new Intent(this, StatisticsActivity.class);
-        startActivity(i);
-    }
-
-    public void achievements(View view){
-        Intent i = new Intent(this, AchievementsActivity.class);
-        startActivity(i);
-    }
-
 
 }

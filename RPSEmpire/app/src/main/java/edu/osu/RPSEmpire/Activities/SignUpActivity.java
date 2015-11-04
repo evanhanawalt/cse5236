@@ -112,15 +112,18 @@ public class SignUpActivity extends AppCompatActivity {
                 } else {
                     e.printStackTrace();
                 }
-                User newUser = new User(firstName, lastName, userName, password, email, points, newPlayer);
+                User newUser = new User(firstName, lastName, userName, password, email, points, newPlayer.getObjectId());
                 newUser.saveToServer(new SignUpCallback() {
                     @Override
                     public void done(ParseException e) {
                         if (e == null) {
                             Log.d("Sign up", "Signed up user");
+                            setResult(RESULT_OK);
                             finish();
                         } else {
-                            e.printStackTrace();
+                            setResult(RESULT_CANCELED);
+                            finish();
+                            // e.printStackTrace();
                         }
                     }
                 });
