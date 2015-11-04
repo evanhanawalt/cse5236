@@ -61,13 +61,13 @@ public class Game extends ParseObject {
         this.saveToServer(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-               String id = getObjectId();
+                String id = getObjectId();
                 createNewRound();
             }
         });
     }
 
-    private void createNewRound() {
+    public void createNewRound() {
         roundNumber++;
         String id = this.getObjectId();
         rounds.add(new Round(this.getObjectId(), roundNumber));
@@ -110,9 +110,13 @@ public class Game extends ParseObject {
         String winner = null;
         // Make sure both players have made a choice
         if (getSelection(player1) != null && getSelection(player2) != null) {
+            rounds.get(roundNumber-1).endTurn();
             if (getSelection(player1) != getSelection(player2)) {
                 // There is a winner or a loser
                 winner = resolveRound();
+            }
+            else {
+                rounds.get(roundNumber-1).createNewTurn();
             }
         }
         return winner;
@@ -138,9 +142,6 @@ public class Game extends ParseObject {
         }
 
         // End round and save it to server
-        rounds.get(rounds.size()-1).endTurn();
-        rounds.get(roundNumber-1).saveToServer();
-        createNewRound();
         return winner;
     }
 

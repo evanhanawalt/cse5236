@@ -34,7 +34,7 @@ public class Round extends ParseObject {
         super("Round");
 
         turnNumber = 0;
-        turnStartTime = System.nanoTime();
+        turnStartTime = System.currentTimeMillis();
 
         put(GAME_ID, gameID);
         put(ROUND_NUMBER, roundNumber);
@@ -49,12 +49,11 @@ public class Round extends ParseObject {
     protected void createNewTurn() {
         turnNumber++;
         turns.add(new Turn(this.getObjectId(), turnNumber, turnStartTime));
-        turnStartTime = System.nanoTime();
+        turnStartTime = System.currentTimeMillis();
     }
 
     protected void endTurn() {
         turns.get(turnNumber-1).endTurn();
-        turns.get(turnNumber-1).saveToServer();
     }
 
     protected void setSelection(int playerNumber, Turn.choice choice) {

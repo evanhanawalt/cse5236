@@ -5,27 +5,18 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Debug;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.parse.GetCallback;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
-import com.parse.SignUpCallback;
 
-import java.util.List;
 import java.util.Random;
 
 import edu.osu.RPSEmpire.Objects.Game;
-import edu.osu.RPSEmpire.Objects.Player;
 import edu.osu.RPSEmpire.Objects.Turn;
 import edu.osu.RPSEmpire.Objects.User;
 import edu.osu.RPSEmpire.R;
@@ -154,8 +145,8 @@ public class GameActivity extends AppCompatActivity {
                 myWins = bestOfNumber;
             }
             else {
-                message = "You threw " + Turn.ChoiceToString(game.getSelection(player1Id));
-                message += ", and your opponent threw " + Turn.ChoiceToString(game.getSelection(player2Id));
+                message = "You threw " + Turn.choiceToString(game.getSelection(player1Id));
+                message += ", and your opponent threw " + Turn.choiceToString(game.getSelection(player2Id));
                 message += ". ";
 
                 String winner = game.resolveTurn();
@@ -173,6 +164,7 @@ public class GameActivity extends AppCompatActivity {
                             dialog.setTitle("You win!");
                             dialog.setMessage(message);
                             dialog.show();
+                            game.createNewRound();
                         }
                     }
                     if (winner.compareTo(player2Id) == 0) {
@@ -188,6 +180,7 @@ public class GameActivity extends AppCompatActivity {
                             dialog.setTitle("You lose!");
                             dialog.setMessage(message);
                             dialog.show();
+                            game.createNewRound();
                         }
                     }
                 } else {
@@ -233,7 +226,6 @@ public class GameActivity extends AppCompatActivity {
                 myWinsField.setText(Integer.toString(myWins));
                 TextView oppWinsField = (TextView) findViewById(R.id.oppwins_num);
                 oppWinsField.setText(Integer.toString(opponentWins));
-                game.saveToServer();
                 game = new Game(player1Id, player2Id, bestOfNumber);
             }
         });

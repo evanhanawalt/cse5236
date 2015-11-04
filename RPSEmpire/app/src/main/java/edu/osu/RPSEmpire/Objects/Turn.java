@@ -25,21 +25,25 @@ public class Turn extends ParseObject {
     public static enum choice { ROCK, PAPER, SCISSORS, QUIT }
     private choice player1move;
     private choice player2move;
+    private int turnNumber;
+    private String roundId;
+    private long timeStart;
+
 
     public Turn () {
         // necessary empty constructor for subclassing parse objects
     }
 
     public Turn ( String roundID,
-                  int turnNumber,
-                  long timeStart) {
+                  int givenTurnNumber,
+                  long timeStarted) {
 
         player1move = null;
         player2move = null;
 
-        put(ROUND_ID, roundID);
-        put(TURN_NUMBER, turnNumber);
-        put(TIME_START, timeStart);
+        roundId = roundID;
+        turnNumber = givenTurnNumber;
+        timeStart = timeStarted;
     }
 
     public void saveToServer () {
@@ -48,6 +52,7 @@ public class Turn extends ParseObject {
         }
         catch (ParseException e) {
             // Something wrong with connection to server
+            e.printStackTrace();
         }
     }
 
@@ -73,10 +78,13 @@ public class Turn extends ParseObject {
     }
 
     protected void endTurn() {
-        long endTime = System.nanoTime();
-        put(PLAYER_1_MOVE, player1move.hashCode());
-        put(PLAYER_2_MOVE, player2move.hashCode());
+        long endTime = System.currentTimeMillis();
+        put(PLAYER_1_MOVE, choiceToString(player1move));
+        put(PLAYER_2_MOVE, choiceToString(player2move));
         put(TIME_END, endTime);
+        put(ROUND_ID, roundId);
+        put(TURN_NUMBER, turnNumber);
+        put(TIME_START, timeStart);
         this.saveToServer();
     }
 
@@ -100,7 +108,7 @@ public class Turn extends ParseObject {
         }
     }
 
-    public static String ChoiceToString(choice selection) {
+    public static String choiceToString(choice selection) {
         if (selection == choice.ROCK) { return "rock"; }
         else if (selection == choice.PAPER) { return "paper"; }
         else if (selection == choice.SCISSORS) { return "scissors"; }
