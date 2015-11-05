@@ -7,6 +7,9 @@ import android.os.Bundle;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import edu.osu.RPSEmpire.Objects.Game;
 import edu.osu.RPSEmpire.Objects.Player;
 import edu.osu.RPSEmpire.Objects.Round;
@@ -18,15 +21,14 @@ import edu.osu.RPSEmpire.Objects.User;
  */
 public class ParseActivity extends Application {
 
-    private BluetoothSocket mSocket;
+    public String test = "Test";
+    private InputStream in;
+    private OutputStream out;
 
-    public BluetoothSocket getmSocket() {
-        return mSocket;
-    }
-
-    public void setmSocket(BluetoothSocket socket) {
-        this.mSocket = socket;
-    }
+    public void setIn(InputStream input) { in = input; }
+    public void setOut(OutputStream output) { out = output; }
+    public InputStream getIn() { return in; }
+    public OutputStream getOut() { return out; }
 
     @Override
     public void onCreate() {

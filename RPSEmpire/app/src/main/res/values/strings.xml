@@ -31,5 +31,8 @@
     <string name="paper">Paper</string>
     <string name="scissors">Scissors</string>
     <string name="quit">Quit</string>
+    <string name="join_game">Join Multiplayer Game</string>
+    <string name="single_game">Start Single Player Game</string>
+    <string name="host_game">Host Multiplayer Game</string>
 
 </resources>

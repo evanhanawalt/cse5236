@@ -79,8 +79,8 @@ public class Turn extends ParseObject {
 
     protected void endTurn() {
         long endTime = System.currentTimeMillis();
-        put(PLAYER_1_MOVE, choiceToString(player1move));
-        put(PLAYER_2_MOVE, choiceToString(player2move));
+        put(PLAYER_1_MOVE, player1move.ordinal());
+        put(PLAYER_2_MOVE, player2move.ordinal());
         put(TIME_END, endTime);
         put(ROUND_ID, roundId);
         put(TURN_NUMBER, turnNumber);

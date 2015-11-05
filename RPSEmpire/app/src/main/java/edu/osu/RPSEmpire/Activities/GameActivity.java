@@ -14,7 +14,12 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import edu.osu.RPSEmpire.Objects.Game;
 import edu.osu.RPSEmpire.Objects.Turn;
@@ -28,6 +33,7 @@ public class GameActivity extends AppCompatActivity {
 
     private String player1Id;
     private String player2Id;
+    private boolean host;
     private Game game;
     public int bestOfNumber;
     private int myWins;
@@ -35,6 +41,8 @@ public class GameActivity extends AppCompatActivity {
     private boolean humanOpponent;
     private AlertDialog.Builder alertDialog;
     private String message;
+    private InputStream inStream;
+    private OutputStream outStream;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +51,36 @@ public class GameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game);
 
         startGame();
+
         // Setup Alert Dialogues
         alertDialog = new AlertDialog.Builder(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        quit();
+    }
+
+    protected void quit() {
+        game.setSelection(player1Id, Turn.choice.QUIT);
+        throwSelection(true);
+        if (humanOpponent) {
+            try {
+                inStream.close();
+            } catch (IOException e) {
+                // Failed to close input stream
+            }
+            try {
+                outStream.close();
+            } catch (IOException e) {
+                // Failed to close output stream
+            }
+            ParseActivity state = ((ParseActivity) getApplicationContext());
+            state.setIn(null);
+            state.setOut(null);
+        }
+        finish();
     }
 
     protected void startGame() {
@@ -53,43 +89,50 @@ public class GameActivity extends AppCompatActivity {
         bestOfNumber = intent.getIntExtra("bestOfNumber", 2);
         humanOpponent = intent.getBooleanExtra("humanOpponent", false);
         player2Id = intent.getStringExtra("player2Id");
+        player1Id = intent.getStringExtra("player1Id");
+        host = intent.getBooleanExtra("isHost", false);
 
-        final ParseUser currentUser;
-        // Pull player info from database
-        ParseQuery<ParseUser> query = ParseUser.getQuery();
-        query.getInBackground(User.getCurrentUser().getObjectId(), new GetCallback<ParseUser>() {
-            @Override
-            public void done(ParseUser user, ParseException e) {
-                if (e == null) {
-                    definePlayer(user);
-                } else {
-                    // Problem fetching user's player object
+        // Setup bluetooth connection variables if needed
+        if (humanOpponent) {
+            ParseActivity state = ((ParseActivity) getApplicationContext());
+            inStream = state.getIn();
+            outStream = state.getOut();
+            Timer mTimer = new Timer();
+            mTimer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    try {
+                        int oppSelectionOrd = inStream.read();
+                        Turn.choice oppSelection = Turn.choice.values()[oppSelectionOrd];
+                        if (oppSelection != null) {
+                            game.setSelection(player2Id, oppSelection);
+                            throwSelection(false);
+                        }
+                    } catch (IOException e) {
+                        // error recieving selection
+                    }
                 }
-            }
-        });
-    }
+            }, 0, 1000);
+        }
 
-    private void definePlayer(ParseUser user) {
-        player1Id = (String) user.get("player_id");
         game = new Game(player1Id, player2Id, bestOfNumber);
     }
-
     public void throwRock(View view) {
         if (game != null) {
             game.setSelection(player1Id, Turn.choice.ROCK);
-            throwSelection();
+            throwSelection(true);
         }
     }
     public void throwScissors(View view) {
         if (game != null) {
             game.setSelection(player1Id, Turn.choice.SCISSORS);
-            throwSelection();
+            throwSelection(true);
         }
     }
     public void throwPaper(View view) {
         if (game != null) {
             game.setSelection(player1Id, Turn.choice.PAPER);
-            throwSelection();
+            throwSelection(true);
         }
     }
     public void quit(View view) {
@@ -104,9 +147,7 @@ public class GameActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     // If player does want to quit, return to game setup page.
-                    game.setSelection(player1Id, Turn.choice.QUIT);
-                    throwSelection();
-                    finish();
+                    quit();
                 }
             });
             dialog.setButton(dialog.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
@@ -119,7 +160,16 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    private void throwSelection () {
+    private void throwSelection (boolean player1thrown) {
+
+        if (humanOpponent && player1thrown) {
+            try {
+                outStream.write(game.getSelection(player1Id).ordinal());
+            } catch (IOException e) {
+                // error sending selection
+            }
+        }
+
         if (game.getSelection(player2Id) == null) {
             // If you choose first, do nothing and wait unless opponent is computer
             if (!humanOpponent) {
@@ -130,7 +180,7 @@ public class GameActivity extends AppCompatActivity {
                 else if (randomChoice == 1) { selection = Turn.choice.SCISSORS; }
                 else if (randomChoice == 2) { selection = Turn.choice.PAPER; }
                 game.setSelection(player2Id, selection);
-                throwSelection();
+                throwSelection(false);
             }
         }
         else {
@@ -161,7 +211,7 @@ public class GameActivity extends AppCompatActivity {
                             // Display win turn message
                             message += "You win the round!";
                             AlertDialog dialog = alertDialog.create();
-                            dialog.setTitle("You win!");
+                            dialog.setTitle("You win the round!");
                             dialog.setMessage(message);
                             dialog.show();
                             game.createNewRound();
@@ -174,10 +224,10 @@ public class GameActivity extends AppCompatActivity {
                         if (opponentWins >= bestOfNumber) {
                             resolveGame(player2Id);
                         } else {
-                            // Display win turn message
+                            // Display lose turn message
                             message += "You lose the round!";
                             AlertDialog dialog = alertDialog.create();
-                            dialog.setTitle("You lose!");
+                            dialog.setTitle("You lose the round!");
                             dialog.setMessage(message);
                             dialog.show();
                             game.createNewRound();
