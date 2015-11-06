@@ -34,30 +34,26 @@ public class Round extends ParseObject {
         super("Round");
 
         turnNumber = 0;
-        turnStartTime = System.nanoTime();
+        turnStartTime = System.currentTimeMillis();
 
         put(GAME_ID, gameID);
         put(ROUND_NUMBER, roundNumber);
 
         turns = new ArrayList<>();
-        this.saveToServer(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                String id = getObjectId();
-                createNewTurn();
-            }
-        });
+        saveToServer();
+
+        String id = getObjectId();
+        createNewTurn();
     }
 
     protected void createNewTurn() {
         turnNumber++;
         turns.add(new Turn(this.getObjectId(), turnNumber, turnStartTime));
-        turnStartTime = System.nanoTime();
+        turnStartTime = System.currentTimeMillis();
     }
 
     protected void endTurn() {
         turns.get(turnNumber-1).endTurn();
-        turns.get(turnNumber-1).saveToServer();
     }
 
     protected void setSelection(int playerNumber, Turn.choice choice) {
@@ -69,7 +65,12 @@ public class Round extends ParseObject {
     }
 
     public void saveToServer () {
-        this.saveInBackground();
+        try {
+            save();
+        }
+        catch (ParseException e) {
+            // Something wrong with connection to server
+        }
     }
 
     public void saveToServer (SaveCallback saveCallback) {

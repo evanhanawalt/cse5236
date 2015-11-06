@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import java.io.InputStream;
 
+import com.parse.ParseUser;
+
 import edu.osu.RPSEmpire.Objects.*;
 import edu.osu.RPSEmpire.R;
 
@@ -88,10 +90,15 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    protected void login(View view){
+        Intent i = new Intent(this, LogInActivity.class);
+        startActivity(i);
+    }
     public void signUp(View view){
         Intent i = new Intent(this, SignUpActivity.class);
         startActivityForResult(i, User.SIGN_UP);
     }
+
 
 
     public void startHomeActivity(){
