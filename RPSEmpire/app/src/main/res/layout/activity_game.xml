@@ -37,28 +37,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/rock"
-                android:id="@+id/button" />
+                android:id="@+id/rock" />
 
             <Button
                 android:onClick="throwPaper"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/paper"
-                android:id="@+id/button2" />
+                android:id="@+id/paper" />
 
             <Button
                 android:onClick="throwScissors"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/scissors"
-                android:id="@+id/button3" />
+                android:id="@+id/scissors" />
 
             <Button
                 android:onClick="quit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/quit"
-                android:id="@+id/button4" />
+                android:id="@+id/quit" />
         </LinearLayout>
     </LinearLayout>
 

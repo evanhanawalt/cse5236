@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.LabeledIntent;
@@ -32,6 +33,7 @@ import java.net.SocketException;
 import java.util.Set;
 import java.util.UUID;
 
+import edu.osu.RPSEmpire.Objects.Game;
 import edu.osu.RPSEmpire.Objects.Player;
 import edu.osu.RPSEmpire.Objects.User;
 import edu.osu.RPSEmpire.R;
@@ -43,11 +45,12 @@ public class GameSetupActivity extends AppCompatActivity {
     private boolean humanOpponent;
     private UUID APP_UUID = UUID.fromString("361fe410-80d5-11e5-8bcf-feff819cdc9f");
     private BluetoothAdapter mBluetoothAdapter;
-    private InputStream inStream;
-    private OutputStream outStream;
     private String opponentID;
     private String playerID;
     private boolean host;
+    private ParseActivity state;
+    private BluetoothServerSocket serverSocket;
+    private BluetoothSocket clientSocket;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,40 +78,35 @@ public class GameSetupActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        resetStreams();
+    public void onResume() {
+        super.onResume();
+        if (serverSocket != null) try {
+            serverSocket.close();
+            serverSocket = null;
+        } catch (IOException e) {
+            // Error closing socket
+        }
+        if (clientSocket != null) try {
+            clientSocket.close();
+            clientSocket = null;
+        } catch (IOException e) {
+            // Error closing socket
+        }
     }
 
     public void back(View view) {
         finish();
     }
 
-    private void resetStreams() {
-        try {
-            mBluetoothAdapter = null;
-            humanOpponent = false;
-            inStream.close();
-            outStream.close();
-            ParseActivity state = ((ParseActivity) getApplicationContext());
-            state.setIn(null);
-            state.setOut(null);
-            host = false;
-        } catch (IOException e) {
-            // Failed to close streams
-        }
-    }
-
     private void connectedWithOpponent(BluetoothSocket opponent) {
 
+        state = ((ParseActivity) getApplicationContext());
         int error = 0;
-        outStream = null;
-        inStream = null;
 
         try {
-            outStream = opponent.getOutputStream();
+            state.setOut(opponent.getOutputStream());
             try {
-                outStream.write(playerID.getBytes("UTF-8"));
+                state.getOut().write(playerID.getBytes("UTF-8"));
             }
             catch (IOException e) {
                 error++;
@@ -126,10 +124,10 @@ public class GameSetupActivity extends AppCompatActivity {
         }
 
         if (error == 0) try {
-            inStream = opponent.getInputStream();
+            state.setIn(opponent.getInputStream());
             try {
                 byte[] buffer = new byte[playerID.length()];
-                inStream.read(buffer);
+                state.getIn().read(buffer);
                 opponentID = new String(buffer, "UTF-8");
             }
             catch (IOException e) {
@@ -151,87 +149,152 @@ public class GameSetupActivity extends AppCompatActivity {
         if (error == 0){
             humanOpponent = true;
             ParseActivity state = ((ParseActivity) getApplicationContext());
-            state.setIn(inStream);
-            state.setOut(outStream);
             startGame();
         }
     }
 
     public void hostGame(View view) {
 
-        // Enable Bluetooth
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (!mBluetoothAdapter.isEnabled()) {
-            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableIntent, 0);
-        }
+        AlertDialog dialog = alertDialog.create();
+        dialog.setTitle("Host a game?");
+        dialog.setMessage("Would you like to host a game between you and another opponent? This will require a Bluetooth connection between the two devices, and your opponent will need to press the join game button on his device.");
+        dialog.setButton(dialog.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Enable Bluetooth
+                mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                if (!mBluetoothAdapter.isEnabled()) {
+                    Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    startActivityForResult(enableIntent, 0);
+                } else {
 
-        // Set up host connection
-        try {
-            BluetoothServerSocket serverSocket = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("RPS Empire", APP_UUID);
-            AlertDialog dialog = alertDialog.create();
-            dialog.setTitle("Waiting...");
-            dialog.setMessage("Waiting for another device to connect...");
-            dialog.show();
-            try {
-                host = true;
-                connectedWithOpponent(serverSocket.accept());
-            }
-            catch (IOException e) {
-                dialog = alertDialog.create();
-                dialog.setTitle("Failed.");
-                dialog.setMessage("Failed to connect with another device.");
-                dialog.show();
-            }
-        }
-        catch (IOException e) {
-            AlertDialog dialog = alertDialog.create();
-            dialog.setTitle("Failed.");
-            dialog.setMessage("Failed to connect with the server to open host game.");
-            dialog.show();
-        }
+                    final AlertDialog dialog2 = alertDialog.create();
+                    dialog2.setTitle("Hosting...");
+                    dialog2.setMessage("Waiting for an opponent to join this game.");
+                    dialog2.setCancelable(false);
+                    dialog2.setCanceledOnTouchOutside(false);
+                    dialog2.show();
 
+                    final Handler h = new Handler();
+                    final int delay = 200;
+
+                    h.postDelayed(new Runnable() {
+                        public void run() {
+                            // Set up host connection
+                            try {
+                                serverSocket = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("RPS Empire", APP_UUID);
+                                try {
+                                    host = true;
+                                    BluetoothSocket returnedSocket = null;
+                                    if (dialog2.isShowing())
+                                        returnedSocket = serverSocket.accept(6000);
+                                    dialog2.dismiss();
+                                    connectedWithOpponent(returnedSocket);
+                                } catch (IOException e) {
+                                    dialog2.dismiss();
+                                    AlertDialog dialog3 = alertDialog.create();
+                                    dialog3.setTitle("Host Timeout.");
+                                    dialog3.setMessage("The window for your opponent to join your game has timed out. Please try again.");
+                                    dialog3.show();
+                                    serverSocket.close();
+                                    serverSocket = null;
+                                }
+                            } catch (IOException e) {
+                                dialog2.dismiss();
+                                AlertDialog dialog3 = alertDialog.create();
+                                dialog3.setTitle("Failed.");
+                                dialog3.setMessage("Failed to connect with the server to open host game.");
+                                dialog3.show();
+                            }
+                        }
+                    }, delay);
+                }
+            }
+        });
+        dialog.setButton(dialog.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // If player does not want to host a game, do nothing
+            }
+        });
+
+
+        dialog.show();
     }
 
     public void joinGame(View view) {
-        // Set up bluetooth
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (!mBluetoothAdapter.isEnabled()) {
-            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableIntent, 0);
-        }
 
-        // Look to join host connection
-        while (mBluetoothAdapter.getBondedDevices().size() == 0) {
-            mBluetoothAdapter.startDiscovery();
-        }
-        Set<BluetoothDevice> devices = mBluetoothAdapter.getBondedDevices();
-        for (BluetoothDevice device : devices) {
-            try {
-                BluetoothSocket socket = device.createRfcommSocketToServiceRecord(APP_UUID);
-                try {
-                    mBluetoothAdapter.cancelDiscovery();
-                    socket.connect();
-                    host = false;
-                    connectedWithOpponent(socket);
-                } catch (IOException e) {
-                    AlertDialog dialog = alertDialog.create();
-                    dialog.setTitle("Connection Failed");
-                    dialog.setMessage("Failed to join game.");
-                    dialog.show();
+        AlertDialog dialog = alertDialog.create();
+        dialog.setTitle("Join a game?");
+        dialog.setMessage("Would you like to search for a hosted game created by another opponent? This will require a Bluetooth connection between the two devices, and your opponent will need to press the host game button on his device.");
+        dialog.setButton(dialog.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Enable Bluetooth
+                mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                if (!mBluetoothAdapter.isEnabled()) {
+                    Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    startActivityForResult(enableIntent, 0);
+                } else {
+
+                    final AlertDialog dialog2 = alertDialog.create();
+                    dialog2.setTitle("Joining...");
+                    dialog2.setMessage("Searching for a game to join.");
+                    dialog2.setCancelable(false);
+                    dialog2.setCanceledOnTouchOutside(false);
+                    dialog2.show();
+
+                    final Handler h = new Handler();
+                    final int delay = 200;
+
+                    h.postDelayed(new Runnable() {
+                        public void run() {
+                            // Look to join host connection
+                            while (mBluetoothAdapter.getBondedDevices().size() == 0) {
+                                mBluetoothAdapter.startDiscovery();
+                            }
+                            Set<BluetoothDevice> devices = mBluetoothAdapter.getBondedDevices();
+                            for (BluetoothDevice device : devices) {
+                                try {
+                                    clientSocket = device.createRfcommSocketToServiceRecord(APP_UUID);
+                                    try {
+                                        mBluetoothAdapter.cancelDiscovery();
+                                        clientSocket.connect();
+                                        host = false;
+                                        dialog2.dismiss();
+                                        connectedWithOpponent(clientSocket);
+                                    } catch (IOException e) {
+                                        dialog2.dismiss();
+                                        AlertDialog dialog3 = alertDialog.create();
+                                        dialog3.setTitle("Connection Failed");
+                                        dialog3.setMessage("Failed to connect to the host game. Please try again.");
+                                        dialog3.show();
+                                    }
+                                } catch (IOException e) {
+                                    dialog2.dismiss();
+                                    AlertDialog dialog3 = alertDialog.create();
+                                    dialog3.setTitle("Join Failed");
+                                    dialog3.setMessage("Failed to find a game to join.");
+                                    dialog3.show();
+                                }
+                            }
+                        }
+                    }, delay);
                 }
-               }
-            catch (IOException e) {
-                AlertDialog dialog = alertDialog.create();
-                dialog.setTitle("Connection Failed");
-                dialog.setMessage("Failed to connect to host device.");
-                dialog.show();
             }
-        }
+        });
+        dialog.setButton(dialog.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // If player does not want to join a game, do nothing
+            }
+        });
+
+
+        dialog.show();
     }
 
     public void singlePlayerGame(View view) {
-        // TODO: set up different AI player connections
         humanOpponent = false;
         opponentID = "3euXx89GXZ"; // Hardcoded ID in database for the CPU opponent
         startGame();
@@ -248,21 +311,32 @@ public class GameSetupActivity extends AppCompatActivity {
                 bestOfNumber = -1;
             }
 
+            if (humanOpponent) {
+                try {
+                    state.getOut().write(bestOfNumber);
+                } catch (IOException e) {
+                    // Error sending bestOfNumber
+                }
+            }
             if (bestOfNumber < 1 || bestOfNumber > 16) {
                 AlertDialog dialog = alertDialog.create();
                 dialog.setTitle("Error Starting Game");
                 dialog.setMessage("Error: please enter an integer number between 1 and 16 for the best-of number.");
                 dialog.show();
-                bestOfNumber = -1;
-                resetStreams();
-            } else {
-                if (humanOpponent) {
-                    try {
-                        outStream.write(bestOfNumber);
-                    } catch (IOException e) {
-                        // Error sending bestOfNumber
-                    }
+                if (serverSocket != null) try {
+                    serverSocket.close();
+                    serverSocket = null;
+                } catch (IOException e) {
+                    // Unable to close socket
                 }
+                if (serverSocket != null) try {
+                    clientSocket.close();
+                    clientSocket = null;
+                } catch (IOException e) {
+                    // Unable to close socket
+                }
+                bestOfNumber = 0;
+            } else {
                 Intent i = new Intent(this, GameActivity.class);
                 i.putExtra("bestOfNumber", bestOfNumber);
                 i.putExtra("humanOpponent", humanOpponent);
@@ -274,14 +348,33 @@ public class GameSetupActivity extends AppCompatActivity {
         }
         else if (humanOpponent && !host) {
             try {
-                bestOfNumber = inStream.read();
-                Intent i = new Intent(this, GameActivity.class);
-                i.putExtra("bestOfNumber", bestOfNumber);
-                i.putExtra("humanOpponent", humanOpponent);
-                i.putExtra("player1Id", playerID);
-                i.putExtra("player2Id", opponentID);
-                i.putExtra("isHost", host);
-                startActivity(i);
+                bestOfNumber = state.getIn().read();
+                if (bestOfNumber < 1 || bestOfNumber > 16) {
+                    AlertDialog dialog = alertDialog.create();
+                    dialog.setTitle("Error Starting Game");
+                    dialog.setMessage("Error: game rules of game you were trying to join were invalid. Try again.");
+                    dialog.show();
+                    if (serverSocket != null) try {
+                        serverSocket.close();
+                        serverSocket = null;
+                    } catch (IOException e) {
+                        // Unable to close socket
+                    }
+                    if (serverSocket != null) try {
+                        clientSocket.close();
+                        clientSocket = null;
+                    } catch (IOException e) {
+                        // Unable to close socket
+                    }
+                } else {
+                    Intent i = new Intent(this, GameActivity.class);
+                    i.putExtra("bestOfNumber", bestOfNumber);
+                    i.putExtra("humanOpponent", humanOpponent);
+                    i.putExtra("player1Id", playerID);
+                    i.putExtra("player2Id", opponentID);
+                    i.putExtra("isHost", host);
+                    startActivity(i);
+                }
             }
             catch (IOException e) {
                 // Error recieving bestOfNumber
