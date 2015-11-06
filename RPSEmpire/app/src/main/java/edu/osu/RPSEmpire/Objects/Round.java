@@ -22,7 +22,6 @@ public class Round extends ParseObject {
     // Round variables
     private ArrayList<Turn> turns;
     private int turnNumber;
-    private long turnStartTime;
 
     public Round () {
         // necessary empty constructor for subclassing parse objects
@@ -31,37 +30,26 @@ public class Round extends ParseObject {
     public Round ( String gameID,
                    int roundNumber ) {
 
-        super("Round");
-
+        // Initialize Variables
         turnNumber = 0;
-        turnStartTime = System.currentTimeMillis();
+        turns = new ArrayList<>();
 
+        // Put relevant variables on parse
         put(GAME_ID, gameID);
         put(ROUND_NUMBER, roundNumber);
 
-        turns = new ArrayList<>();
+        // Save object to server and create first turn
         saveToServer();
-
-        String id = getObjectId();
         createNewTurn();
     }
 
     protected void createNewTurn() {
         turnNumber++;
-        turns.add(new Turn(this.getObjectId(), turnNumber, turnStartTime));
-        turnStartTime = System.currentTimeMillis();
+        turns.add(new Turn(this.getObjectId(), turnNumber, System.currentTimeMillis()));
     }
 
-    protected void endTurn() {
-        turns.get(turnNumber-1).endTurn();
-    }
-
-    protected void setSelection(int playerNumber, Turn.choice choice) {
-        turns.get(turnNumber-1).setSelection(playerNumber, choice);
-    }
-
-    protected Turn.choice getSelection(int playerNumber) {
-        return turns.get(turnNumber-1).getSelection(playerNumber);
+    protected void endTurn(int player1selection, int player2selection) {
+        turns.get(turnNumber-1).endTurn(player1selection, player2selection);
     }
 
     public void saveToServer () {

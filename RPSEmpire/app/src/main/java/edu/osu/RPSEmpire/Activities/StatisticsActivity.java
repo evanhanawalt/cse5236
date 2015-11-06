@@ -25,26 +25,40 @@ public class StatisticsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
 
-        // EXAMPLE STATISTICS PULL
+        String text = "";
+
+        // EXAMPLE STATISTICS PULLS
+        text += "Number of games played: " + Integer.toString(getTotalGames()) + "\n";
+       // text += "Number of games quit: " + Integer.toString(getQuitGames()) + "\n";
+
+
+        TextView textField = (TextView) findViewById(R.id.stat_text);
+        textField.setText(text);
+    }
+
+    private int getTotalGames() {
+
+        int player1Games = 0;
+        int player2Games = 0;
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Game");
         query.whereEqualTo("player_1_id", User.getCurrentUser().get("player_id"));
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-                if (e == null) {
-                    setTotalGames(objects.size());
-                } else {
-                    // Problem fetching user's player object
-                }
-            }
-        });
-    }
+        try {
+            player1Games = query.find().size();
+        }
+        catch (ParseException e){
+            // error connecting to server
+        }
+        query = ParseQuery.getQuery("Game");
+        query.whereEqualTo("player_2_id", User.getCurrentUser().get("player_id"));
+        try {
+            player2Games = query.find().size();
+        }
+        catch (ParseException e){
+            // error connecting to server
+        }
 
-    private void setTotalGames(int totalGames) {
-
-        TextView textField = (TextView) findViewById(R.id.stat_text);
-        textField.setText("Number of games played: " + Integer.toString(totalGames));
+        return player1Games+player2Games;
     }
 
     @Override

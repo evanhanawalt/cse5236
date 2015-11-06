@@ -7,15 +7,22 @@
         android:onClick="singlePlayerGame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Single Player Game"
+        android:text="@string/single_game"
         android:id="@+id/single_player" />
 
     <Button
-        android:onClick="multiPlayerGame"
+        android:onClick="hostGame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Look for Players"
-        android:id="@+id/multi_player" />
+        android:text="@string/host_game"
+        android:id="@+id/host_game" />
+
+    <Button
+        android:onClick="joinGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/join_game"
+        android:id="@+id/join_game" />
 
     <LinearLayout
         android:orientation="horizontal"

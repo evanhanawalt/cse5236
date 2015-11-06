@@ -22,9 +22,6 @@ public class Turn extends ParseObject {
     private final String TIME_END = "time_end";
 
     // turn variables
-    public static enum choice { ROCK, PAPER, SCISSORS, QUIT }
-    private choice player1move;
-    private choice player2move;
     private int turnNumber;
     private String roundId;
     private long timeStart;
@@ -38,9 +35,7 @@ public class Turn extends ParseObject {
                   int givenTurnNumber,
                   long timeStarted) {
 
-        player1move = null;
-        player2move = null;
-
+        // Initialize variables
         roundId = roundID;
         turnNumber = givenTurnNumber;
         timeStart = timeStarted;
@@ -56,63 +51,15 @@ public class Turn extends ParseObject {
         }
     }
 
-    protected void setSelection(int playerNumber, choice chosenSelection)
-    {
-        if (playerNumber == 1) {
-            player1move = chosenSelection;
-        }
-        else if (playerNumber == 2) {
-            player2move = chosenSelection;
-        }
-    }
-
-    protected choice getSelection(int playerNumber) {
-        choice selection = null;
-        if (playerNumber == 1) {
-            selection = player1move;
-        }
-        else if (playerNumber == 2) {
-            selection = player2move;
-        }
-        return selection;
-    }
-
-    protected void endTurn() {
+    protected void endTurn(int player1selection, int player2selection) {
         long endTime = System.currentTimeMillis();
-        put(PLAYER_1_MOVE, choiceToString(player1move));
-        put(PLAYER_2_MOVE, choiceToString(player2move));
+        put(PLAYER_1_MOVE, player1selection);
+        put(PLAYER_2_MOVE, player2selection);
         put(TIME_END, endTime);
         put(ROUND_ID, roundId);
         put(TURN_NUMBER, turnNumber);
         put(TIME_START, timeStart);
         this.saveToServer();
-    }
-
-    public static Game.result determineVictory(choice player1selection, choice player2selection) {
-        if (player1selection == choice.QUIT) {
-            return Game.result.LOSE;
-        }
-        else if (player2selection == choice.QUIT) {
-            return Game.result.WIN;
-        }
-        else if (player1selection == player2selection) {
-            return Game.result.TIE;
-        }
-        else if ((player1selection == choice.ROCK && player2selection == choice.PAPER) ||
-                (player1selection == choice.PAPER && player2selection == choice.SCISSORS) ||
-                (player1selection == choice.SCISSORS && player2selection == choice.ROCK )) {
-            return Game.result.LOSE;
-        }
-        else  {
-            return Game.result.WIN;
-        }
-    }
-
-    public static String choiceToString(choice selection) {
-        if (selection == choice.ROCK) { return "rock"; }
-        else if (selection == choice.PAPER) { return "paper"; }
-        else if (selection == choice.SCISSORS) { return "scissors"; }
-        else  { return "quit"; }
     }
 
     // getters/setters
