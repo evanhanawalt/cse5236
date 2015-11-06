@@ -69,8 +69,10 @@ public class LogInActivity extends AppCompatActivity {
 
         try {
             ParseUser.logIn(userName, password);
+            setResult(RESULT_OK);
             finish();
         } catch (ParseException e) {
+            setResult(RESULT_CANCELED);
             AlertDialog dialog = alertDialog.create();
             dialog.setTitle("Error Logging In");
             dialog.setMessage("Error: "+e.getMessage()+".");

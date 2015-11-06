@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import edu.osu.RPSEmpire.Objects.User;
 import edu.osu.RPSEmpire.R;
 
 public class HomeActivity extends AppCompatActivity {
@@ -103,5 +104,8 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-
+    public void logOut(View view){
+        User.logOut();
+        finish();
+    }
 }

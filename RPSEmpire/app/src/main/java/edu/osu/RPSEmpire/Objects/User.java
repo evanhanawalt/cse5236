@@ -21,6 +21,8 @@ public class User extends ParseUser {
     private final String POINTS = "points";
     private final String PLAYER_ID = "player_id";
     public static final int SIGN_UP = 1;
+    public static final int LOGIN = 2;
+
     public User () {
         // necessary empty constructor for subclassing parse objects
     }

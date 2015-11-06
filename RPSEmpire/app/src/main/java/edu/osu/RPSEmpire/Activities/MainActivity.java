@@ -90,9 +90,9 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    protected void login(View view){
+    public void login(View view){
         Intent i = new Intent(this, LogInActivity.class);
-        startActivity(i);
+        startActivityForResult(i, User.LOGIN);
     }
     public void signUp(View view){
         Intent i = new Intent(this, SignUpActivity.class);
@@ -108,13 +108,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        String activity="Log IN";
         switch ( requestCode ) {
             case User.SIGN_UP:
+                activity="Sign Up";
+            case User.LOGIN:
+
                 if (resultCode == RESULT_OK ){
                     startHomeActivity();
-                    Log.d("MainActivity", "Sign Up Returned with RESULT_OK");
+                    Log.d("MainActivity", activity +" Returned with RESULT_OK");
                 } else {
-                    Log.d("MainActivity", "Sign Up Returned with RESULT_CANCELED");
+                    Log.d("MainActivity", activity +" Returned with RESULT_CANCELED");
                     Toast.makeText(MainActivity.this, "Sign Up Failed", Toast.LENGTH_SHORT).show();
                 }
                 break;
