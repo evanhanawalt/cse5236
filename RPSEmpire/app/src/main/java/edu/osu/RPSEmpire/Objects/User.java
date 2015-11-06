@@ -57,6 +57,13 @@ public class User extends ParseUser {
         put(PLAYER_ID, player);
     }
 
+    public User(String userName, String password, String email, int points) {
+        setUsername(userName);
+        setPassword(password);
+        setEmail(email);
+        put(POINTS, points);
+    }
+
     public void setPlayer(String playerID) { put(PLAYER_ID, playerID); saveInBackground(); }
     public static User getCurrentUser(){
         return (User) ParseUser.getCurrentUser();

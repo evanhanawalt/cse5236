@@ -62,19 +62,15 @@ public class SignUpActivity extends AppCompatActivity {
 
     public void signUp(View view){
 
-        TextView firstNameField = (TextView) findViewById(R.id.first_name);
-        TextView lastNameField = (TextView) findViewById(R.id.last_name);
-        TextView nicknameField = (TextView) findViewById(R.id.nickname);
+        TextView userNameField = (TextView) findViewById(R.id.user_name);
         TextView emailField = (TextView) findViewById(R.id.email);
         TextView passwordField = (TextView) findViewById(R.id.password);
         TextView confirmPasswordField = (TextView) findViewById(R.id.confirm_password);
         ToggleButton isRightHandedField = (ToggleButton) findViewById(R.id.is_right_handed);
-        final String firstName = firstNameField.getText().toString();
-        final String lastName = lastNameField.getText().toString();
         final String password = passwordField.getText().toString();
         final String confirmPassword = confirmPasswordField.getText().toString();
         final String email = emailField.getText().toString();
-        final String userName = nicknameField.getText().toString();
+        final String userName = userNameField.getText().toString();
         final boolean isRightHanded = isRightHandedField.isChecked();
         final int points = 0;
 
@@ -114,7 +110,7 @@ public class SignUpActivity extends AppCompatActivity {
             dialog.show();
         }
         else {
-            final User newUser = new User(firstName, lastName, userName, password, email, points);
+            final User newUser = new User(userName, password, email, points );
             newUser.saveToServer(new SignUpCallback() {
                 @Override
                 public void done(ParseException e) {
