@@ -26,15 +26,15 @@
     <string name="title_activity_statistics">Statistics</string>
     <string name="title_activity_achievements">Achievements</string>
     <string name="title_game">Game</string>
-<<<<<<< HEAD
+
     <string name="title_activity_home">Home</string>
     <string name="play">Play</string>
     <string name="sign_up_button_label">Sign Up</string>
-=======
+
     <string name="rock">Rock</string>
     <string name="paper">Paper</string>
     <string name="scissors">Scissors</string>
     <string name="quit">Quit</string>
->>>>>>> master
+
 
 </resources>

@@ -77,36 +77,6 @@ public class SignUpActivity extends AppCompatActivity {
         final String userName = nicknameField.getText().toString();
         final boolean isRightHanded = isRightHandedField.isChecked();
         final int points = 0;
-<<<<<<< HEAD
-        final Player newPlayer = new Player(nicknameField.getText().toString(), true, isRightHandedField.isChecked());
-        newPlayer.saveToServer(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    Log.d("Sign Up", "Saved Player object to Server");
-                } else {
-                    e.printStackTrace();
-                }
-                User newUser = new User(firstName, lastName, userName, password, email, points, newPlayer.getObjectId());
-                newUser.saveToServer(new SignUpCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e == null) {
-                            Log.d("Sign up", "Signed up user");
-                            setResult(RESULT_OK);
-                            finish();
-                        } else {
-                            setResult(RESULT_CANCELED);
-                            finish();
-                            // e.printStackTrace();
-                        }
-                    }
-                });
-            }
-        });
-
-=======
->>>>>>> master
 
         if (password.compareTo("") == 0) {
             // password is a required field

@@ -52,4 +52,14 @@
         android:layout_gravity="center_horizontal"
         android:layout_weight="10"/>
 
+    <Button
+        style="@style/secondary_button"
+        android:layout_height="wrap_content"
+        android:text="@string/about"
+        android:onClick="logOut"
+        android:id="@+id/button"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="10"
+        android:layout_width="match_parent" />
+
 </LinearLayout>
