@@ -1,67 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="1">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Your Wins: "
-        android:id="@+id/yourwins_text" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0"
-        android:id="@+id/yourwins_num" />
 
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="0.83">
+        android:orientation="horizontal"
+        android:layout_gravity="right">
 
-        <Button
-            android:onClick="throwRock"
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Rock"
-            android:id="@+id/button" />
+            android:text="Opponent&apos;s Wins:"
+            android:id="@+id/oppwins_text"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-        <Button
-            android:onClick="throwPaper"
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Paper"
-            android:id="@+id/button2" />
-
-        <Button
-            android:onClick="throwScissors"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Scissors"
-            android:id="@+id/button3" />
-
-        <Button
-            android:onClick="quit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Quit"
-            android:id="@+id/button4" />
+            android:text="0"
+            android:id="@+id/oppwins_num"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Opponent&apos;s Wins:"
-        android:id="@+id/oppwins_text" />
+        android:orientation="vertical">
+        <Space
+            android:layout_width="fill_parent"
+            android:layout_height="339dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Your Wins: "
+                android:id="@+id/yourwins_text" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="0"
+                android:id="@+id/yourwins_num" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_gravity="center_horizontal">
+
+    <ImageButton
+        style="@style/selection_button"
+
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/rock"
+
+        android:id="@+id/button" />
+
+    <Space
+        android:layout_width="10dp"
+        android:layout_height="match_parent" />
+
+    <ImageButton
+        style="@style/selection_button"
+        android:layout_width="100dp"
+
+        android:layout_height="100dp"
+        android:src="@drawable/paper"
+        android:id="@+id/imageButton"
+        android:layout_gravity="center_horizontal" />
+
+    <Space
+        android:layout_width="10dp"
+        android:layout_height="match_parent" />
+
+    <ImageButton
+        style="@style/selection_button"
+
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/scissors"
+        android:id="@+id/button3"
+        android:layout_gravity="right" />
+
+</LinearLayout>
+
+    <Space
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="0"
-        android:id="@+id/oppwins_num" />
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.06" />
+
+    <Button
+        android:onClick="quit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Quit"
+        android:id="@+id/button4"
+        android:layout_gravity="center_horizontal" />
 
 </LinearLayout>

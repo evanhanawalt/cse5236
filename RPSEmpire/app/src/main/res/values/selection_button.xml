@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="selection_button">
-
+    <style name="selection_button" parent="Widget.AppCompat.Button">
+        <item name="android:useDefaultMargins">true</item>
+        <item name="android:background">#00000000</item>
     </style>
 </resources>

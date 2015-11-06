@@ -37,7 +37,7 @@ public class GameActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        startGame();
+       // startGame();
     }
 
     protected void startGame() {
