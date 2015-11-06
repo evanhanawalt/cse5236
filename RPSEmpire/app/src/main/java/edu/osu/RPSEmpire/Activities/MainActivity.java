@@ -9,6 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.parse.ParseUser;
+
 import edu.osu.RPSEmpire.Objects.*;
 import edu.osu.RPSEmpire.R;
 
@@ -32,20 +34,10 @@ public class MainActivity extends AppCompatActivity {
     public void onResume(){
         super.onResume();
         Log.d("MainActivity", "onResume Called");
-        Button signup_button = (Button) findViewById(R.id.sign_up);
-        Button statistics_button = (Button) findViewById(R.id.statistics);
-        Button options_button = (Button) findViewById(R.id.options);
-        Button achievements_button = (Button) findViewById(R.id.achievements);
-        if (User.getCurrentUser() != null){
-            signup_button.setVisibility(View.INVISIBLE);
-            statistics_button.setVisibility(View.VISIBLE);
-            options_button.setVisibility(View.VISIBLE);
-            achievements_button.setVisibility(View.VISIBLE);
-        } else {
-            signup_button.setVisibility(View.VISIBLE);
-            statistics_button.setVisibility(View.INVISIBLE);
-            options_button.setVisibility(View.INVISIBLE);
-            achievements_button.setVisibility(View.INVISIBLE);
+        if (User.getCurrentUser() == null) {
+            // Prompt User to Sign Up or Log In
+            Intent i = new Intent(this, SignInActivity.class);
+            startActivity(i);
         }
     }
 
@@ -96,20 +88,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void login(View view){
-        // TODO: implement login
-        // JUST FOR DEBUGGING:
-        Intent i = new Intent(this, GameSetupActivity.class);
+    public void logOut(View view){
+        ParseUser.logOut();
+        Intent i = new Intent(this, SignInActivity.class);
         startActivity(i);
     }
 
-
+    public void startGame(View view){
+        Intent i = new Intent(this, GameSetupActivity.class);
+        startActivity(i);
+    }
 
     public void signUp(View view){
         Intent i = new Intent(this, SignUpActivity.class);
         startActivity(i);
     }
-
 
     public void about(View view){
         Intent i = new Intent(this, AboutActivity.class);

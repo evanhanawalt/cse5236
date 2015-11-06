@@ -23,14 +23,32 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".Activities.SignInActivity"
+            android:label="@string/title_activity_sign_in" >
+        </activity>
+        <activity
             android:name=".Activities.SignUpActivity"
             android:label="@string/title_activity_sign_up" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.osu.RPSEmpire.Activities.SignInActivity" />
+        </activity>
+        <activity
+            android:name=".Activities.LogInActivity"
+            android:label="@string/title_activity_log_in" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.osu.RPSEmpire.Activities.SignInActivity" />
         </activity>
         <activity
             android:name=".Activities.GameSetupActivity"
             android:label="@string/title_game_setup" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.osu.RPSEmpire.Activities.MainActivity" />
         </activity>
         <activity
+
             android:name=".Activities.AboutActivity"
             android:label="@string/title_activity_about"
             android:parentActivityName=".Activities.MainActivity" >
@@ -61,7 +79,14 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.osu.RPSEmpire.Activities.MainActivity" />
+
         </activity>
+        <activity
+            android:name=".Activities.GameActivity"
+            android:label="@string/title_game" />
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="edu.osu.RPSEmpire.Activities.GameSetupActivity" />
     </application>
 
 </manifest>
