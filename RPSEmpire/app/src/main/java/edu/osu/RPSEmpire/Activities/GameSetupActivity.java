@@ -51,7 +51,6 @@ public class GameSetupActivity extends AppCompatActivity {
     private ParseActivity state;
     private BluetoothServerSocket serverSocket;
     private BluetoothSocket clientSocket;
-    private AlertDialog discoveryDialog;
 
 
     @Override
@@ -241,40 +240,53 @@ public class GameSetupActivity extends AppCompatActivity {
                     startActivityForResult(enableIntent, 0);
                 } else {
 
-                    final AlertDialog dialog2 = alertDialog.create();
-                    dialog2.setTitle("Joining...");
-                    dialog2.setMessage("Searching for a game to join.");
-                    dialog2.setCancelable(false);
-                    dialog2.setCanceledOnTouchOutside(false);
-                    dialog2.show();
+                    final Set<BluetoothDevice> devices = mBluetoothAdapter.getBondedDevices();
+                    if (devices.size() == 0) {
+                        AlertDialog dialog2 = alertDialog.create();
+                        dialog2.setTitle("No devices found!");
+                        dialog2.setMessage("This device is not paired to any devices. Please pair with your device with your opponent's device and try again.");
+                        dialog2.show();
+                    }
+                    else {
+                        final AlertDialog dialog2 = alertDialog.create();
+                        dialog2.setTitle("Joining...");
+                        dialog2.setMessage("Searching for a game to join.");
+                        dialog2.setCancelable(false);
+                        dialog2.setCanceledOnTouchOutside(false);
+                        dialog2.show();
 
-                    final Handler h = new Handler();
-                    final int delay = 200;
+                        final Handler h = new Handler();
+                        final int delay = 200;
 
-                    h.postDelayed(new Runnable() {
-                        public void run() {
-                            // Look to join host connection
-
-                            Set<BluetoothDevice> devices = mBluetoothAdapter.getBondedDevices();
-                            for (BluetoothDevice device : devices) {
-                                try {
-                                    clientSocket = device.createRfcommSocketToServiceRecord(APP_UUID);
+                        h.postDelayed(new Runnable() {
+                            public void run() {
+                                // Look to join host connection
+                                for (BluetoothDevice device : devices) {
                                     try {
-                                        clientSocket.connect();
-                                        host = false;
-                                        dialog2.dismiss();
-                                        connectedWithOpponent(clientSocket);
+                                        clientSocket = device.createRfcommSocketToServiceRecord(APP_UUID);
+                                        try {
+                                            clientSocket.connect();
+                                            host = false;
+                                            dialog2.dismiss();
+                                            connectedWithOpponent(clientSocket);
+                                        } catch (IOException e) {
+                                            dialog2.dismiss();
+                                            AlertDialog dialog3 = alertDialog.create();
+                                            dialog3.setTitle("Failed.");
+                                            dialog3.setMessage("Failed to connect with the game's host. Please try again.");
+                                            dialog3.show();
+                                        }
                                     } catch (IOException e) {
-                                        Log.d("GameSetupActivity", " Failed to connect");
+                                        dialog2.dismiss();
+                                        AlertDialog dialog3 = alertDialog.create();
+                                        dialog3.setTitle("Failed.");
+                                        dialog3.setMessage("Failed to find a game to connect to. Please make sure your device is paired with your opponent's device or you won't be able to find their hosted games.");
+                                        dialog3.show();
                                     }
-                                } catch (IOException e) {
-                                    Log.d("GameSetupActivity", " Failed to connect");
                                 }
                             }
-                            dialog2.dismiss();
-
-                        }
-                    }, delay);
+                        }, delay);
+                    }
                 }
             }
         });

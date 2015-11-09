@@ -240,15 +240,29 @@ public class GameActivity extends AppCompatActivity {
                                 AlertDialog dialog2 = alertDialog.create();
                                 dialog2.setTitle("Opponent has declined.");
                                 dialog2.setMessage("The opponent has declined to play another game.");
+                                dialog2.setCanceledOnTouchOutside(false);
                                 dialog2.setCancelable(false);
-                                finish();
+                                dialog2.setButton(dialog.BUTTON_NEUTRAL, "Ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        finish();
+                                    }
+                                });
+                                dialog2.show();
                             }
                         } catch (IOException e) {
                             AlertDialog dialog2 = alertDialog.create();
                             dialog2.setTitle("Opponent has declined.");
                             dialog2.setMessage("The opponent has declined to play another game.");
+                            dialog2.setCanceledOnTouchOutside(false);
                             dialog2.setCancelable(false);
-                            finish();
+                            dialog2.setButton(dialog.BUTTON_NEUTRAL, "Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            });
+                            dialog2.show();
                         }
                     }
                     catch (IOException e) {

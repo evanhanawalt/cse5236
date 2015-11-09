@@ -21,7 +21,7 @@
     <string name="about">About</string>
     <string name="statistics">Statistics</string>
     <string name="achievements">Achievements</string>
-    <string name="about_text">\tRPS Empire is the premiere rock paper scissors application on the android platform. Created in 2015 by Evan Hanawalt and Tylor Lilley as a project for CSE5236.</string>
+    <string name="about_text">RPS Empire is the premiere "Rock, Paper, Scissors" application on the android platform. Created in 2015 by Evan Hanawalt and Tylor Lilley as a project for CSE5236.</string>
     <string name="title_activity_options">Options</string>
     <string name="title_activity_statistics">Statistics</string>
     <string name="title_activity_achievements">Achievements</string>
