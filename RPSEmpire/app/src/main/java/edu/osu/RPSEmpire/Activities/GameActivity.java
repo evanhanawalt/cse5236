@@ -140,8 +140,8 @@ public class GameActivity extends AppCompatActivity {
 
     private void throwSelection() {
         state = ((ParseActivity) getApplicationContext());
-
         acceptSelection = false;
+
         // Get player2 Selection
         if (humanOpponent) {
             try {
@@ -163,18 +163,18 @@ public class GameActivity extends AppCompatActivity {
 
         // Compare selections and resolve turn/round/game
         int turnResult;
-        if (host) game.endTurn(player1Selection, player2Selection);
+        if (host || !humanOpponent) game.endTurn(player1Selection, player2Selection);
         turnResult = determineVictory(player1Selection, player2Selection);
         if (player2Selection < 3) {
             if (turnResult == 0) {
-                if (host) game.createNewTurn();
+                if (host || !humanOpponent) game.createNewTurn();
             } else {
                 if (turnResult == -1) {
                     opponentWins++;
                 } else {
                     myWins++;
                 }
-                if (host && (myWins < bestOfNumber && opponentWins < bestOfNumber))
+                if ((host || !humanOpponent) && (myWins < bestOfNumber && opponentWins < bestOfNumber))
                     game.createNewRound();
             }
         } else {
@@ -259,7 +259,7 @@ public class GameActivity extends AppCompatActivity {
                 myWins = 0;
                 opponentWins = 0;
                 updateTextFields();
-                if (host) game = new Game(player1Id, player2Id, bestOfNumber);
+                if (host | !humanOpponent) game = new Game(player1Id, player2Id, bestOfNumber);
             }
         });
         dialog.setButton(dialog.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {

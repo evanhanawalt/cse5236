@@ -59,7 +59,7 @@ public class Turn extends ParseObject {
         put(ROUND_ID, roundId);
         put(TURN_NUMBER, turnNumber);
         put(TIME_START, timeStart);
-        this.saveToServer();
+        saveToServer();
     }
 
     // getters/setters
