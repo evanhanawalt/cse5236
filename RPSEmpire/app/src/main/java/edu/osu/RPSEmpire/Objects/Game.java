@@ -84,4 +84,8 @@ public class Game extends ParseObject {
             // Something wrong with connection to server
         }
     }
+
+    public int getBestOfNumber(){
+        return getInt(BEST_OF);
+    }
 }

@@ -55,7 +55,7 @@
     <Button
         style="@style/secondary_button"
         android:layout_height="wrap_content"
-        android:text="@string/about"
+        android:text="Log Out"
         android:onClick="logOut"
         android:id="@+id/button"
         android:layout_gravity="center_horizontal"

@@ -1,77 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="1"
     android:gravity="center_horizontal">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <Space
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Your Wins: "
-        android:id="@+id/yourwins_text" />
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.11" />
+
+    <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <TextView
+        style="@style/Base.TextAppearance.AppCompat.Medium"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Your Wins: "
+    android:id="@+id/yourwins_text" />
 
     <TextView
+        style="@style/Base.TextAppearance.AppCompat.Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0"
         android:id="@+id/yourwins_num" />
+</LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            style="@style/Base.TextAppearance.AppCompat.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Opponent&apos;s Wins: "
+            android:id="@+id/oppwins_text" />
+
+        <TextView
+            style="@style/Base.TextAppearance.AppCompat.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:id="@+id/oppwins_num" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_width="152dp"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:foregroundGravity="center_vertical"
+        android:gravity="center_horizontal"
+        android:layout_weight="0.78">
 
-        <LinearLayout
-            android:orientation="vertical"
+        <ImageButton
+            android:onClick="throwRock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="0.83"
-            android:foregroundGravity="center_vertical"
-            android:gravity="center_horizontal">
+            android:src="@drawable/rock"
+            android:id="@+id/rock"
+            android:layout_gravity="center_vertical" />
 
-            <Button
-                android:onClick="throwRock"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/rock"
-                android:id="@+id/rock" />
 
-            <Button
-                android:onClick="throwPaper"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/paper"
-                android:id="@+id/paper" />
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/paper"
+            android:onClick="throwPaper"
+            android:id="@+id/paper"
+            android:layout_gravity="center_vertical" />
 
-            <Button
-                android:onClick="throwScissors"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/scissors"
-                android:id="@+id/scissors" />
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/scissors"
+            android:onClick="throwScissors"
+            android:id="@+id/scissors"
+            android:layout_gravity="center_vertical" />
 
-            <Button
-                android:onClick="quit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/quit"
-                android:id="@+id/quit" />
-        </LinearLayout>
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Opponent&apos;s Wins: "
-        android:id="@+id/oppwins_text" />
+    <Button
+        style="@style/primary_button"
+            android:onClick="quit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/quit"
+            android:id="@+id/quit" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0"
-        android:id="@+id/oppwins_num" />
 
 </LinearLayout>
