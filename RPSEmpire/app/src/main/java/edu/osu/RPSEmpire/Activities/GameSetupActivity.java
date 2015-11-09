@@ -51,6 +51,8 @@ public class GameSetupActivity extends AppCompatActivity {
     private ParseActivity state;
     private BluetoothServerSocket serverSocket;
     private BluetoothSocket clientSocket;
+    private AlertDialog discoveryDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +63,9 @@ public class GameSetupActivity extends AppCompatActivity {
     @Override
     public void onStart(){
         super.onStart();
-
+        IntentFilter i = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        i.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        i.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         final ParseUser currentUser;
         // Pull player info from database
         ParseQuery<ParseUser> query = ParseUser.getQuery();
@@ -250,34 +254,25 @@ public class GameSetupActivity extends AppCompatActivity {
                     h.postDelayed(new Runnable() {
                         public void run() {
                             // Look to join host connection
-                            while (mBluetoothAdapter.getBondedDevices().size() == 0) {
-                                mBluetoothAdapter.startDiscovery();
-                            }
+
                             Set<BluetoothDevice> devices = mBluetoothAdapter.getBondedDevices();
                             for (BluetoothDevice device : devices) {
                                 try {
                                     clientSocket = device.createRfcommSocketToServiceRecord(APP_UUID);
                                     try {
-                                        mBluetoothAdapter.cancelDiscovery();
                                         clientSocket.connect();
                                         host = false;
                                         dialog2.dismiss();
                                         connectedWithOpponent(clientSocket);
                                     } catch (IOException e) {
-                                        dialog2.dismiss();
-                                        AlertDialog dialog3 = alertDialog.create();
-                                        dialog3.setTitle("Connection Failed");
-                                        dialog3.setMessage("Failed to connect to the host game. Please try again.");
-                                        dialog3.show();
+                                        Log.d("GameSetupActivity", " Failed to connect");
                                     }
                                 } catch (IOException e) {
-                                    dialog2.dismiss();
-                                    AlertDialog dialog3 = alertDialog.create();
-                                    dialog3.setTitle("Join Failed");
-                                    dialog3.setMessage("Failed to find a game to join.");
-                                    dialog3.show();
+                                    Log.d("GameSetupActivity", " Failed to connect");
                                 }
                             }
+                            dialog2.dismiss();
+
                         }
                     }, delay);
                 }

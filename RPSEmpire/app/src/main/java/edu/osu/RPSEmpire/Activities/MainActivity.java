@@ -8,6 +8,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import java.io.InputStream;
 
 import com.parse.ParseUser;
 
@@ -28,17 +31,15 @@ public class MainActivity extends AppCompatActivity {
     public void onStart(){
         super.onStart();
         Log.d("MainActivity", "onStart Called");
+        if(User.getCurrentUser() != null){
+            startHomeActivity();
+        }
     }
 
     @Override
     public void onResume(){
         super.onResume();
         Log.d("MainActivity", "onResume Called");
-        if (User.getCurrentUser() == null) {
-            // Prompt User to Sign Up or Log In
-            Intent i = new Intent(this, SignInActivity.class);
-            startActivity(i);
-        }
     }
 
     @Override
@@ -88,41 +89,40 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void logOut(View view){
-        ParseUser.logOut();
-        Intent i = new Intent(this, SignInActivity.class);
-        startActivity(i);
-    }
 
-    public void startGame(View view){
-        Intent i = new Intent(this, GameSetupActivity.class);
-        startActivity(i);
+    public void login(View view){
+        Intent i = new Intent(this, LogInActivity.class);
+        startActivityForResult(i, User.LOGIN);
     }
-
     public void signUp(View view){
         Intent i = new Intent(this, SignUpActivity.class);
+        startActivityForResult(i, User.SIGN_UP);
+    }
+
+
+
+    public void startHomeActivity(){
+        Intent i = new Intent(this, HomeActivity.class);
         startActivity(i);
     }
 
-    public void about(View view){
-        Intent i = new Intent(this, AboutActivity.class);
-        startActivity(i);
-    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        String activity="Log IN";
+        switch ( requestCode ) {
+            case User.SIGN_UP:
+                activity="Sign Up";
+            case User.LOGIN:
 
-    public void options(View view){
-        Intent i = new Intent(this, OptionsActivity.class);
-        startActivity(i);
+                if (resultCode == RESULT_OK ){
+                    startHomeActivity();
+                    Log.d("MainActivity", activity +" Returned with RESULT_OK");
+                } else {
+                    Log.d("MainActivity", activity +" Returned with RESULT_CANCELED");
+                    Toast.makeText(MainActivity.this, "Sign Up Failed", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
     }
-
-    public void statistics(View view){
-        Intent i = new Intent(this, StatisticsActivity.class);
-        startActivity(i);
-    }
-
-    public void achievements(View view){
-        Intent i = new Intent(this, AchievementsActivity.class);
-        startActivity(i);
-    }
-
 
 }

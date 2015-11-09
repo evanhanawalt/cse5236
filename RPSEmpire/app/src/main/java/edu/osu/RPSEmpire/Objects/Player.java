@@ -58,6 +58,9 @@ public class Player extends ParseObject{
     public boolean isHuman () {
         return getBoolean(IS_HUMAN);
     }
+    public void setIsRightHanded(boolean isRightHanded) {
+        this.put(IS_RIGHT_HANDED, isRightHanded);
+    }
     public boolean isRightHanded () {
         return getBoolean(IS_RIGHT_HANDED);
     }

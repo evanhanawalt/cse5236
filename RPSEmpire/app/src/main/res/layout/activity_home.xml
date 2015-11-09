@@ -1,0 +1,65 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="edu.osu.RPSEmpire.Activities.HomeActivity"
+    android:id="@+id/activity_home"
+    android:orientation="vertical">
+
+    <Button
+        style="@style/primary_button"
+        android:onClick="play"
+        android:text="@string/play"
+        android:id="@+id/play"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:layout_weight="25"/>
+
+
+
+    <Button
+        style="@style/secondary_button"
+        android:layout_height="wrap_content"
+        android:text="@string/achievements"
+        android:onClick="achievements"
+        android:id="@+id/achievements"
+        android:layout_weight="10"/>
+
+    <Button
+        style="@style/secondary_button2"
+        android:layout_height="wrap_content"
+        android:text="@string/statistics"
+        android:onClick="statistics"
+        android:id="@+id/statistics"
+        android:layout_weight="10"/>
+
+    <Button
+        style="@style/secondary_button"
+        android:layout_height="wrap_content"
+        android:text="@string/options"
+        android:onClick="options"
+        android:id="@+id/options"
+        android:layout_weight="10" />
+
+    <Button
+        style="@style/secondary_button2"
+        android:layout_height="wrap_content"
+        android:text="@string/about"
+        android:onClick="about"
+        android:id="@+id/about"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="10"/>
+
+    <Button
+        style="@style/secondary_button"
+        android:layout_height="wrap_content"
+        android:text="Log Out"
+        android:onClick="logOut"
+        android:id="@+id/button"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="10"
+        android:layout_width="match_parent" />
+
+</LinearLayout>

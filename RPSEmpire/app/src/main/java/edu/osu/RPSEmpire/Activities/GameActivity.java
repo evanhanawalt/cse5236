@@ -50,6 +50,7 @@ public class GameActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
         alertDialog = new AlertDialog.Builder(this);
         state = ((ParseActivity) getApplicationContext());
 

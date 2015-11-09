@@ -20,6 +20,8 @@ public class User extends ParseUser {
     private final String LAST_NAME = "last_name";
     private final String POINTS = "points";
     private final String PLAYER_ID = "player_id";
+    public static final int SIGN_UP = 1;
+    public static final int LOGIN = 2;
 
     public User () {
         // necessary empty constructor for subclassing parse objects
@@ -36,6 +38,29 @@ public class User extends ParseUser {
         setEmail(email);
         put(FIRST_NAME, firstName);
         put(LAST_NAME, lastName);
+        put(POINTS, points);
+    }
+    public User ( String firstName,
+                  String lastName,
+                  String userName,
+                  String password,
+                  String email,
+                  int points,
+                  String player) {
+
+        setUsername(userName);
+        setPassword(password);
+        setEmail(email);
+        put(FIRST_NAME, firstName);
+        put(LAST_NAME, lastName);
+        put(POINTS, points);
+        put(PLAYER_ID, player);
+    }
+
+    public User(String userName, String password, String email, int points) {
+        setUsername(userName);
+        setPassword(password);
+        setEmail(email);
         put(POINTS, points);
     }
 

@@ -66,11 +66,11 @@ public class Turn extends ParseObject {
     public String getRoundID () {
         return getString(ROUND_ID);
     }
-    public String getPlayer1Move () {
-        return getString(PLAYER_1_MOVE);
+    public int getPlayer1Move () {
+        return (int) getNumber(PLAYER_1_MOVE);
     }
-    public String getPlayer2Move () {
-        return getString(PLAYER_2_MOVE);
+    public int getPlayer2Move () {
+        return (int) getNumber(PLAYER_2_MOVE);
     }
     public int getTurnNumber () {
         return getInt(TURN_NUMBER);
