@@ -116,10 +116,10 @@ public class MainActivity extends AppCompatActivity {
 
                 if (resultCode == RESULT_OK ){
                     startHomeActivity();
-                    Log.d("MainActivity", activity +" Returned with RESULT_OK");
+                 //   Log.d("MainActivity", activity +" Returned with RESULT_OK");
                 } else {
                     Log.d("MainActivity", activity +" Returned with RESULT_CANCELED");
-                    Toast.makeText(MainActivity.this, "Sign Up Failed", Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(MainActivity.this, "Sign Up Failed", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
