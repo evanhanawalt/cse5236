@@ -77,6 +77,15 @@
         android:id="@+id/join_game"
         android:layout_gravity="center_horizontal"/>
 
+        <Button
+            style="@style/secondary_button2"
+            android:onClick="pairDevices"
+            android:layout_width="fill_parent"
+            android:layout_height="82dp"
+            android:text="PAIR DEVICES"
+            android:id="@+id/pair_button"
+            android:layout_gravity="center_horizontal" />
+
         <Space
             android:layout_width="match_parent"
             android:layout_height="50dp"
