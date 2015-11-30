@@ -14,10 +14,12 @@ import android.content.pm.LabeledIntent;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +32,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.SocketException;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 
@@ -41,6 +45,7 @@ import edu.osu.RPSEmpire.R;
 public class GameSetupActivity extends AppCompatActivity {
 
     AlertDialog.Builder alertDialog;
+    AlertDialog dialogSpecial;
     private int bestOfNumber;
     private boolean humanOpponent;
     private UUID APP_UUID = UUID.fromString("361fe410-80d5-11e5-8bcf-feff819cdc9f");
@@ -49,9 +54,35 @@ public class GameSetupActivity extends AppCompatActivity {
     private String playerID;
     private boolean host;
     private ParseActivity state;
+    private Set<BluetoothDevice> devices;
     private BluetoothServerSocket serverSocket;
     private BluetoothSocket clientSocket;
 
+    public static int REQUEST_BLUETOOTH = 1;
+
+    private final BroadcastReceiver bReciever = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                device.createBond();
+            }
+            if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                if (dialogSpecial.isShowing()) {
+                    dialogSpecial.setTitle("No Devices Found");
+                    dialogSpecial.setMessage("Error: no discoverable devices were found within range. Please try again.");
+                }
+            }
+            if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
+                final int state = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR);
+                if (state == BluetoothDevice.BOND_BONDED) {
+                    if (dialogSpecial.isShowing()) {
+                        dialogSpecial.dismiss();
+                    }
+                }
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +93,16 @@ public class GameSetupActivity extends AppCompatActivity {
     @Override
     public void onStart(){
         super.onStart();
+
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        devices = mBluetoothAdapter.getBondedDevices();
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(bReciever, filter);
+        filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        registerReceiver(bReciever, filter);
+        filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+        registerReceiver(bReciever, filter);
+
         IntentFilter i = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         i.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         i.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
@@ -78,6 +119,7 @@ public class GameSetupActivity extends AppCompatActivity {
 
         // Setup Alert Dialogues
         alertDialog = new AlertDialog.Builder(this);
+        dialogSpecial = alertDialog.create();
     }
 
     @Override
@@ -156,6 +198,41 @@ public class GameSetupActivity extends AppCompatActivity {
         }
     }
 
+    public void pairDevices(View view) {
+        if (mBluetoothAdapter == null) {
+            AlertDialog dialog2 = alertDialog.create();
+            dialog2.setTitle("Incompatible Device");
+            dialog2.setMessage("Error: the device you are using does not support bluetooth. Sorry!");
+            dialog2.show();
+        } else {
+            if (!mBluetoothAdapter.isEnabled()) {
+                Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableIntent, REQUEST_BLUETOOTH);
+            }
+            else {
+                // Make Discoverable
+                Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+                discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+                startActivity(discoverableIntent);
+
+                // Find devices
+                mBluetoothAdapter.cancelDiscovery();
+                mBluetoothAdapter.startDiscovery();
+                dialogSpecial.setTitle("Pairing...");
+                dialogSpecial.setMessage("Discovering other devices to pair with while this message is being displayed.");
+                dialogSpecial.setCancelable(false);
+                dialogSpecial.setCanceledOnTouchOutside(false);
+                dialogSpecial.setButton(dialogSpecial.BUTTON_NEUTRAL, "END", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mBluetoothAdapter.cancelDiscovery();
+                    }
+                });
+                dialogSpecial.show();
+            }
+        }
+    }
+
     public void hostGame(View view) {
 
         AlertDialog dialog = alertDialog.create();
@@ -165,52 +242,58 @@ public class GameSetupActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // Enable Bluetooth
-                mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                if (!mBluetoothAdapter.isEnabled()) {
-                    Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                    startActivityForResult(enableIntent, 0);
-                } else {
-
-                    final AlertDialog dialog2 = alertDialog.create();
-                    dialog2.setTitle("Hosting...");
-                    dialog2.setMessage("Waiting for an opponent to join this game.");
-                    dialog2.setCancelable(false);
-                    dialog2.setCanceledOnTouchOutside(false);
+                if (mBluetoothAdapter == null) {
+                    AlertDialog dialog2 = alertDialog.create();
+                    dialog2.setTitle("Incompatible Device");
+                    dialog2.setMessage("Error: the device you are using does not support bluetooth. Sorry!");
                     dialog2.show();
+                } else {
+                    if (!mBluetoothAdapter.isEnabled()) {
+                        Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                        startActivityForResult(enableIntent, REQUEST_BLUETOOTH);
+                    } else {
 
-                    final Handler h = new Handler();
-                    final int delay = 200;
+                        final AlertDialog dialog2 = alertDialog.create();
+                        dialog2.setTitle("Hosting...");
+                        dialog2.setMessage("Waiting for an opponent to join this game.");
+                        dialog2.setCancelable(false);
+                        dialog2.setCanceledOnTouchOutside(false);
+                        dialog2.show();
 
-                    h.postDelayed(new Runnable() {
-                        public void run() {
-                            // Set up host connection
-                            try {
-                                serverSocket = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("RPS Empire", APP_UUID);
+                        final Handler h = new Handler();
+                        final int delay = 600;
+
+                        h.postDelayed(new Runnable() {
+                            public void run() {
+                                // Set up host connection
                                 try {
-                                    host = true;
-                                    BluetoothSocket returnedSocket = null;
-                                    if (dialog2.isShowing())
-                                        returnedSocket = serverSocket.accept(6000);
-                                    dialog2.dismiss();
-                                    connectedWithOpponent(returnedSocket);
+                                    serverSocket = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("RPS Empire", APP_UUID);
+                                    try {
+                                        host = true;
+                                        BluetoothSocket returnedSocket = null;
+                                        if (dialog2.isShowing())
+                                            returnedSocket = serverSocket.accept(6000);
+                                        dialog2.dismiss();
+                                        connectedWithOpponent(returnedSocket);
+                                    } catch (IOException e) {
+                                        dialog2.dismiss();
+                                        AlertDialog dialog3 = alertDialog.create();
+                                        dialog3.setTitle("Host Timeout");
+                                        dialog3.setMessage("The window for your opponent to join your game has timed out. Please try again.");
+                                        dialog3.show();
+                                        serverSocket.close();
+                                        serverSocket = null;
+                                    }
                                 } catch (IOException e) {
                                     dialog2.dismiss();
                                     AlertDialog dialog3 = alertDialog.create();
-                                    dialog3.setTitle("Host Timeout.");
-                                    dialog3.setMessage("The window for your opponent to join your game has timed out. Please try again.");
+                                    dialog3.setTitle("Failed to Connect");
+                                    dialog3.setMessage("Failed to connect with the server to open host game.");
                                     dialog3.show();
-                                    serverSocket.close();
-                                    serverSocket = null;
                                 }
-                            } catch (IOException e) {
-                                dialog2.dismiss();
-                                AlertDialog dialog3 = alertDialog.create();
-                                dialog3.setTitle("Failed.");
-                                dialog3.setMessage("Failed to connect with the server to open host game.");
-                                dialog3.show();
                             }
-                        }
-                    }, delay);
+                        }, delay);
+                    }
                 }
             }
         });
@@ -234,58 +317,63 @@ public class GameSetupActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // Enable Bluetooth
-                mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                if (!mBluetoothAdapter.isEnabled()) {
-                    Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                    startActivityForResult(enableIntent, 0);
+                if (mBluetoothAdapter == null) {
+                    AlertDialog dialog2 = alertDialog.create();
+                    dialog2.setTitle("Incompatible Device");
+                    dialog2.setMessage("Error: the device you are using does not support bluetooth. Sorry!");
+                    dialog2.show();
                 } else {
+                    if (!mBluetoothAdapter.isEnabled()) {
+                        Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                        startActivityForResult(enableIntent, 0);
+                    } else {
+                        devices = mBluetoothAdapter.getBondedDevices();
+                        if (devices.size() > 0) {
+                            final AlertDialog dialog2 = alertDialog.create();
+                            dialog2.setTitle("Joining...");
+                            dialog2.setMessage("Searching for a game to join.");
+                            dialog2.setCancelable(false);
+                            dialog2.setCanceledOnTouchOutside(false);
+                            dialog2.show();
 
-                    final Set<BluetoothDevice> devices = mBluetoothAdapter.getBondedDevices();
-                    if (devices.size() == 0) {
-                        AlertDialog dialog2 = alertDialog.create();
-                        dialog2.setTitle("No devices found!");
-                        dialog2.setMessage("This device is not paired to any devices. Please pair with your device with your opponent's device and try again.");
-                        dialog2.show();
-                    }
-                    else {
-                        final AlertDialog dialog2 = alertDialog.create();
-                        dialog2.setTitle("Joining...");
-                        dialog2.setMessage("Searching for a game to join.");
-                        dialog2.setCancelable(false);
-                        dialog2.setCanceledOnTouchOutside(false);
-                        dialog2.show();
+                            final Handler h = new Handler();
+                            final int delay = 600;
 
-                        final Handler h = new Handler();
-                        final int delay = 200;
-
-                        h.postDelayed(new Runnable() {
-                            public void run() {
-                                // Look to join host connection
-                                for (BluetoothDevice device : devices) {
-                                    try {
-                                        clientSocket = device.createRfcommSocketToServiceRecord(APP_UUID);
+                            h.postDelayed(new Runnable() {
+                                public void run() {
+                                    // Look to join host connection
+                                    boolean foundOpp = false;
+                                    for (BluetoothDevice device : devices) {
                                         try {
-                                            clientSocket.connect();
-                                            host = false;
-                                            dialog2.dismiss();
-                                            connectedWithOpponent(clientSocket);
+                                            clientSocket = device.createRfcommSocketToServiceRecord(APP_UUID);
+                                            try {
+                                                clientSocket.connect();
+                                                host = false;
+                                                dialog2.dismiss();
+                                                connectedWithOpponent(clientSocket);
+                                                foundOpp = true;
+                                            } catch (IOException e) {
+                                                foundOpp = false;
+                                            }
                                         } catch (IOException e) {
-                                            dialog2.dismiss();
-                                            AlertDialog dialog3 = alertDialog.create();
-                                            dialog3.setTitle("Failed.");
-                                            dialog3.setMessage("Failed to connect with the game's host. Please try again.");
-                                            dialog3.show();
+                                            foundOpp = false;
                                         }
-                                    } catch (IOException e) {
+                                    }
+                                    if (dialog2.isShowing()) {
                                         dialog2.dismiss();
                                         AlertDialog dialog3 = alertDialog.create();
-                                        dialog3.setTitle("Failed.");
-                                        dialog3.setMessage("Failed to find a game to connect to. Please make sure your device is paired with your opponent's device or you won't be able to find their hosted games.");
+                                        dialog3.setTitle("No Hosted Games Found");
+                                        dialog3.setMessage("Failed to find a game to connect to. Please make sure your device is paired with your opponent's device and that they are hosting a game.");
                                         dialog3.show();
                                     }
                                 }
-                            }
-                        }, delay);
+                            }, delay);
+                        } else {
+                            AlertDialog dialog2 = alertDialog.create();
+                            dialog2.setTitle("No Devices Found");
+                            dialog2.setMessage("Error: no devices are currently paired with this device. Please pair your device with the opponent's device and try again.");
+                            dialog2.show();
+                        }
                     }
                 }
             }
