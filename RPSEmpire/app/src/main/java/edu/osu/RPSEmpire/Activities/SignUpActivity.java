@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -29,13 +30,15 @@ import edu.osu.RPSEmpire.R;
 public class SignUpActivity extends AppCompatActivity {
 
     AlertDialog.Builder alertDialog;
-
+    private ProgressBar spinner;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         // Setup Alert Dialogues
         alertDialog = new AlertDialog.Builder(this);
+        spinner = (ProgressBar)findViewById(R.id.progressBar1);
+        spinner.setVisibility(View.GONE);
     }
 
     @Override
@@ -62,6 +65,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     public void signUp(View view){
 
+        spinner.setVisibility(View.VISIBLE);
         TextView userNameField = (TextView) findViewById(R.id.user_name);
         TextView emailField = (TextView) findViewById(R.id.email);
         TextView passwordField = (TextView) findViewById(R.id.password);
@@ -75,6 +79,7 @@ public class SignUpActivity extends AppCompatActivity {
         final int points = 0;
 
         if (password.compareTo("") == 0) {
+            spinner.setVisibility(View.GONE);
             // password is a required field
             AlertDialog dialog = alertDialog.create();
             dialog.setTitle("Error Signing Up");
@@ -82,6 +87,7 @@ public class SignUpActivity extends AppCompatActivity {
             dialog.show();
         }
         else if (confirmPassword.compareTo("") == 0) {
+            spinner.setVisibility(View.GONE);
             // confirm password is a required field
             AlertDialog dialog = alertDialog.create();
             dialog.setTitle("Error Signing Up");
@@ -89,6 +95,7 @@ public class SignUpActivity extends AppCompatActivity {
             dialog.show();
         }
         else if (password.compareTo(confirmPassword) != 0) {
+            spinner.setVisibility(View.GONE);
             // password fields must match
             AlertDialog dialog = alertDialog.create();
             dialog.setTitle("Error Signing Up");
@@ -96,6 +103,7 @@ public class SignUpActivity extends AppCompatActivity {
             dialog.show();
         }
         else if (userName.compareTo("") == 0) {
+            spinner.setVisibility(View.GONE);
             // userName is a required field
             AlertDialog dialog = alertDialog.create();
             dialog.setTitle("Error Signing Up");
@@ -103,23 +111,27 @@ public class SignUpActivity extends AppCompatActivity {
             dialog.show();
         }
         else if (email.compareTo("") == 0) {
+            spinner.setVisibility(View.GONE);
             // userName is a required field
             AlertDialog dialog = alertDialog.create();
             dialog.setTitle("Error Signing Up");
             dialog.setMessage("Error: the email name field cannot be left empty.");
             dialog.show();
+
         }
         else {
             final User newUser = new User(userName, password, email, points );
             newUser.saveToServer(new SignUpCallback() {
                 @Override
                 public void done(ParseException e) {
+
                     if (e == null) {
                         // Create new player object and provide user with information
                         final Player newPlayer = new Player(userName, true, isRightHanded);
                         newPlayer.saveToServer(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {
+                                spinner.setVisibility(View.GONE);
                                 if (e == null) {
                                     newUser.setPlayer(newPlayer.getObjectId());
                                     try {
@@ -133,10 +145,11 @@ public class SignUpActivity extends AppCompatActivity {
                             }
                         });
                     } else {
+                        spinner.setVisibility(View.GONE);
                         // Display error message explaining to user why sign up failed
                         AlertDialog dialog = alertDialog.create();
                         dialog.setTitle("Error Signing Up");
-                        dialog.setMessage("Error: " + e.getMessage() + ".");
+                        dialog.setMessage("Error: " + e.getMessage() +  " Internet Connection Necessary to Sign Up.");
                         dialog.show();
                     }
                 }
