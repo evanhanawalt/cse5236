@@ -3,6 +3,7 @@ package edu.osu.RPSEmpire.Objects;
 import android.content.Intent;
 import android.util.Log;
 
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseClassName;
@@ -81,7 +82,7 @@ public class Game extends ParseObject {
         try {
             save();
         } catch (ParseException e) {
-            // Something wrong with connection to server
+            pinInBackground(); // saved locally
         }
     }
 

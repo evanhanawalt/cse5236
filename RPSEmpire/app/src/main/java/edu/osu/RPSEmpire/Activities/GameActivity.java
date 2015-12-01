@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,6 +13,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.games.Games;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,13 +28,16 @@ import java.util.Timer;
 
 import edu.osu.RPSEmpire.Objects.Game;
 import edu.osu.RPSEmpire.Objects.Turn;
+import edu.osu.RPSEmpire.Objects.User;
 import edu.osu.RPSEmpire.R;
 
 /**
  * Created by Tylor on 10/20/2015.
  */
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     private String player1Id;
     private String player2Id;
@@ -44,9 +53,47 @@ public class GameActivity extends AppCompatActivity {
     private int player2Selection;
     private ParseActivity state;
     public boolean acceptSelection;
+    private GoogleApiClient mGoogleApiClient;
+
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.d("GameActivity", "onConnectionFailed Called");
+        CharSequence text = "Google Play connection Failed";
+        Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG);
+        toast.show();
+    }
+
+
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.d("MainActivity", "onConnectionSuspended Called");
+        // Attempt to reconnect
+        mGoogleApiClient.connect();
+    }
+
+
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        Log.d("MainActivity", "onConnected Called");
+        // The player is signed in. Hide the sign-in button and allow the
+        // player to proceed.
+    }
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Games.API).addScope(Games.SCOPE_GAMES)
+                .build();
+
+        mGoogleApiClient.connect();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
@@ -325,8 +372,16 @@ public class GameActivity extends AppCompatActivity {
 
         switch (messageNumber) {
             case -2: {
+                if (mGoogleApiClient.isConnected()) {
+                    Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_you_lose));
+                } else {
+                    CharSequence text = "Connect online to unlock achievements";
+                    Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG);
+                    toast.show();
+                }
                 dialog.setTitle("You lose!");
                 dialog.setMessage(message+="You lose the game. Too bad! ");
+
                 break;
             } case -1: {
                 dialog.setTitle("You lose.");
@@ -337,15 +392,38 @@ public class GameActivity extends AppCompatActivity {
                 dialog.setMessage(message+="You win the turn. The round continues! ");
                 break;
             } case 1: {
+
+                if (mGoogleApiClient.isConnected()) {
+                    if (player1Selection == 0) {
+                        Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_rocky_road));
+                    } else if(player1Selection == 1) {
+                        Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_paper_weight));
+                    } else if (player1Selection == 2){
+                        Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_split_finger));
+                    }
+                } else {
+                    CharSequence text = "Connect online to unlock achievements";
+                    Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG);
+                    toast.show();
+                }
                 dialog.setTitle("You win.");
                 dialog.setMessage(message+="You win the round and score 1 point! ");
                 break;
             } case 2: {
+                if (mGoogleApiClient.isConnected()) {
+                    Games.Achievements.unlock(mGoogleApiClient, getString(R.string.achievement_you_win));
+                } else {
+                    CharSequence text = "Connect online to unlock achievements";
+                    Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG);
+                    toast.show();
+                }
                 dialog.setTitle("You win!");
                 dialog.setMessage(message+="You win the game. Congratulations! ");
+
                 break;
             }
             case 3: {
+
                 dialog.setTitle("You win!");
                 dialog.setMessage("Your opponent has quit the game. You win by default!");
                 dialog.setCancelable(false);

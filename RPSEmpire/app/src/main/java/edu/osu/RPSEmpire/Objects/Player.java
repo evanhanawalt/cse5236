@@ -43,6 +43,7 @@ public class Player extends ParseObject{
 
     public void saveToServer () {
         this.saveInBackground();
+        pinInBackground();
     }
     public void saveToServer (SaveCallback saveCallback) {
         this.saveInBackground(saveCallback);

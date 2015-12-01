@@ -12,37 +12,42 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".Activities.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity>a
         <activity
             android:name=".Activities.SignInActivity"
-            android:label="@string/title_activity_sign_in" >
+            android:label="@string/title_activity_sign_in"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".Activities.SignUpActivity"
-            android:label="@string/title_activity_sign_up" >
+            android:label="@string/title_activity_sign_up"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.osu.RPSEmpire.Activities.SignInActivity" />
         </activity>
         <activity
             android:name=".Activities.LogInActivity"
-            android:label="@string/title_activity_log_in" >
+            android:label="@string/title_activity_log_in"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.osu.RPSEmpire.Activities.SignInActivity" />
         </activity>
         <activity
             android:name=".Activities.GameSetupActivity"
-            android:label="@string/title_game_setup" >
+            android:label="@string/title_game_setup"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.osu.RPSEmpire.Activities.MainActivity" />
@@ -50,15 +55,18 @@
         <activity
             android:name=".Activities.AboutActivity"
             android:label="@string/title_activity_about"
-            android:parentActivityName=".Activities.MainActivity" >
+            android:parentActivityName=".Activities.MainActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="edu.osu.RPSEmpire.Activities.HomeActivity" />
+                android:value="edu.osu.RPSEmpire.Activities.HomeActivity"
+                />
         </activity>
         <activity
             android:name=".Activities.OptionsActivity"
             android:label="@string/title_activity_options"
-            android:parentActivityName=".Activities.MainActivity" >
+            android:parentActivityName=".Activities.MainActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.osu.RPSEmpire.Activities.HomeActivity" />
@@ -66,7 +74,8 @@
         <activity
             android:name=".Activities.StatisticsActivity"
             android:label="@string/title_activity_statistics"
-            android:parentActivityName=".Activities.MainActivity" >
+            android:parentActivityName=".Activities.MainActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.osu.RPSEmpire.Activities.HomeActivity" />
@@ -74,21 +83,30 @@
         <activity
             android:name=".Activities.AchievementsActivity"
             android:label="@string/title_activity_achievements"
-            android:parentActivityName=".Activities.MainActivity" >
+            android:parentActivityName=".Activities.MainActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.osu.RPSEmpire.Activities.HomeActivity" />
         </activity>
         <activity
             android:name=".Activities.GameActivity"
-            android:label="@string/title_game" />
+            android:label="@string/title_game"
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".Activities.HomeActivity"
             android:label="@string/title_activity_home"
-            android:parentActivityName=".Activities.MainActivity" >
+            android:parentActivityName=".Activities.MainActivity"
+            android:screenOrientation="portrait">
 
         </activity>
+        <meta-data android:name="com.google.android.gms.games.APP_ID"
+            android:value="@string/app_id" />
+        <meta-data android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version"/>
+
     </application>
 
 </manifest>
+

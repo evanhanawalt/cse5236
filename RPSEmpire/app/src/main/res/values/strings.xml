@@ -38,6 +38,7 @@
     <string name="join_game">Join Multiplayer Game</string>
     <string name="single_game">Start Single Player Game</string>
     <string name="host_game">Host Multiplayer Game</string>
+    <string name="signin_other_error">Google Play Services Sign In Error</string>
 
 
 </resources>

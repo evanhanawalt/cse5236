@@ -7,16 +7,63 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.games.Games;
 
 import edu.osu.RPSEmpire.Objects.User;
 import edu.osu.RPSEmpire.R;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
+
+
+    private GoogleApiClient mGoogleApiClient;
+    private final int REQUEST_ACHIEVEMENTS = 1;
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.d("GameActivity", "onConnectionFailed Called");
+        CharSequence text = "Google Play connection Failed";
+        Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG);
+        toast.show();
+    }
+
+
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.d("MainActivity", "onConnectionSuspended Called");
+        // Attempt to reconnect
+        mGoogleApiClient.connect();
+    }
+
+
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        Log.d("MainActivity", "onConnected Called");
+        // The player is signed in. Hide the sign-in button and allow the
+        // player to proceed.
+        startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient),
+                REQUEST_ACHIEVEMENTS);
+    }
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Games.API).addScope(Games.SCOPE_GAMES)
+                .build();
     }
 
     @Override
@@ -100,8 +147,12 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void achievements(View view){
-        Intent i = new Intent(this, AchievementsActivity.class);
-        startActivity(i);
+        if (mGoogleApiClient.isConnected()){
+            startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient),
+                    REQUEST_ACHIEVEMENTS);
+        }
+        mGoogleApiClient.connect();
+
     }
 
     public void logOut(View view){

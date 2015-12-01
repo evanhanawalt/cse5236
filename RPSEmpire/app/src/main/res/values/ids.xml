@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_id">477286192917</string>
+    <string name="package_name">edu.osu.RPSEmpire</string>
+    <string name="achievement_you_win">CgkIla7lg_INEAIQAQ</string>
+    <string name="achievement_you_lose">CgkIla7lg_INEAIQAg</string>
+    <string name="achievement_rocky_road">CgkIla7lg_INEAIQAw</string>
+    <string name="achievement_paper_weight">CgkIla7lg_INEAIQBA</string>
+    <string name="achievement_split_finger">CgkIla7lg_INEAIQBQ</string>
+</resources>
