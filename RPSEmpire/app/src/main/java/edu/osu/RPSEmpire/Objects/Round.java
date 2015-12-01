@@ -57,7 +57,7 @@ public class Round extends ParseObject {
             save();
         }
         catch (ParseException e) {
-            // Something wrong with connection to server
+            pinInBackground();
         }
     }
 

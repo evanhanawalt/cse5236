@@ -47,7 +47,7 @@ public class Turn extends ParseObject {
         }
         catch (ParseException e) {
             // Something wrong with connection to server
-            e.printStackTrace();
+            pinInBackground();
         }
     }
 
