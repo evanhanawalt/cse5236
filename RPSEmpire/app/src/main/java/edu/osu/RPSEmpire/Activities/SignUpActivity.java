@@ -79,6 +79,7 @@ public class SignUpActivity extends AppCompatActivity {
         final int points = 0;
 
         if (password.compareTo("") == 0) {
+            spinner.setVisibility(View.GONE);
             // password is a required field
             AlertDialog dialog = alertDialog.create();
             dialog.setTitle("Error Signing Up");
@@ -86,6 +87,7 @@ public class SignUpActivity extends AppCompatActivity {
             dialog.show();
         }
         else if (confirmPassword.compareTo("") == 0) {
+            spinner.setVisibility(View.GONE);
             // confirm password is a required field
             AlertDialog dialog = alertDialog.create();
             dialog.setTitle("Error Signing Up");
@@ -93,6 +95,7 @@ public class SignUpActivity extends AppCompatActivity {
             dialog.show();
         }
         else if (password.compareTo(confirmPassword) != 0) {
+            spinner.setVisibility(View.GONE);
             // password fields must match
             AlertDialog dialog = alertDialog.create();
             dialog.setTitle("Error Signing Up");
@@ -100,6 +103,7 @@ public class SignUpActivity extends AppCompatActivity {
             dialog.show();
         }
         else if (userName.compareTo("") == 0) {
+            spinner.setVisibility(View.GONE);
             // userName is a required field
             AlertDialog dialog = alertDialog.create();
             dialog.setTitle("Error Signing Up");
@@ -107,11 +111,13 @@ public class SignUpActivity extends AppCompatActivity {
             dialog.show();
         }
         else if (email.compareTo("") == 0) {
+            spinner.setVisibility(View.GONE);
             // userName is a required field
             AlertDialog dialog = alertDialog.create();
             dialog.setTitle("Error Signing Up");
             dialog.setMessage("Error: the email name field cannot be left empty.");
             dialog.show();
+
         }
         else {
             final User newUser = new User(userName, password, email, points );
@@ -143,7 +149,7 @@ public class SignUpActivity extends AppCompatActivity {
                         // Display error message explaining to user why sign up failed
                         AlertDialog dialog = alertDialog.create();
                         dialog.setTitle("Error Signing Up");
-                        dialog.setMessage("Error: " + e.getMessage() + ".");
+                        dialog.setMessage("Error: " + e.getMessage() +  " Internet Connection Necessary to Sign Up.");
                         dialog.show();
                     }
                 }

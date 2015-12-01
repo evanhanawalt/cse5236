@@ -39,6 +39,7 @@ public class LogInActivity extends AppCompatActivity {
         alertDialog = new AlertDialog.Builder(this);
         spinner = (ProgressBar)findViewById(R.id.progressBar1);
         spinner.setVisibility(View.GONE);
+
     }
 
     @Override
@@ -64,6 +65,7 @@ public class LogInActivity extends AppCompatActivity {
     }
 
     public void logIn(View view){
+
         spinner.setVisibility(View.VISIBLE);
         TextView userNameField = (TextView) findViewById(R.id.user_name);
         TextView passwordField = (TextView) findViewById(R.id.password);
@@ -80,7 +82,7 @@ public class LogInActivity extends AppCompatActivity {
             setResult(RESULT_CANCELED);
             AlertDialog dialog = alertDialog.create();
             dialog.setTitle("Error Logging In");
-            dialog.setMessage("Error: "+e.getMessage()+".");
+            dialog.setMessage("Error: "+e.getMessage()+" Internet Connection Necessary.");
             dialog.show();
         }
 

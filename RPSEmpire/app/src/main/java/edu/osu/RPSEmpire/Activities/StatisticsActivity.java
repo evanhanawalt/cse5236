@@ -269,14 +269,14 @@ public class StatisticsActivity extends AppCompatActivity {
             String output = "Games Played: " + Integer.toString(mLostGames + mWonGames) + "\n" +
                     "Games Won: " + mWonGames + "\n" +
                     "Games Lost: " + mLostGames + "\n" +
-                    "Rounds\n" +
+                    "\nRounds\n" +
                     "Rock Wins: " + mWonRock + "\n" +
                     "Rock Losses: " + mLostRock + "\n" +
                     "Rock Ties: " + mTiedRock + "\n" +
-                    "Paper Wins: " + mWonPaper + "\n" +
+                    "\nPaper Wins: " + mWonPaper + "\n" +
                     "Paper Losses: " + mLostPaper + "\n" +
                     "Paper Ties: " + mTiedPaper + "\n" +
-                    "Scissors Wins: " + mWonScissors + "\n" +
+                    "\nScissors Wins: " + mWonScissors + "\n" +
                     "Scissors Losses: " + mLostScissors + "\n" +
                     "Scissors Ties: " + mTiedScissors + "\n";
             Log.d("Statistical Output", output);
