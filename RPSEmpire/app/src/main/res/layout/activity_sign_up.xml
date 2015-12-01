@@ -115,7 +115,12 @@
         </LinearLayout>
 
     </LinearLayout>
-
+    <ProgressBar
+        android:id="@+id/progressBar1"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" />
     <Space
         android:layout_width="match_parent"
         android:layout_height="25dp"

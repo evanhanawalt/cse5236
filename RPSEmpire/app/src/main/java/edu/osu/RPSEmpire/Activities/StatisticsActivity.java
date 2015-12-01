@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.parse.FindCallback;
@@ -30,7 +31,7 @@ import edu.osu.RPSEmpire.R;
 
 public class StatisticsActivity extends AppCompatActivity {
 
-
+    private ProgressBar spinner;
     private class StatisticsTask extends AsyncTask<String, Void, String>{
         List<Game> player1Games;
         List<Game> player2Games;
@@ -373,6 +374,7 @@ public class StatisticsActivity extends AppCompatActivity {
 
             TextView textField = (TextView) findViewById(R.id.stat_text);
             textField.setText(result);
+            spinner.setVisibility(View.GONE);
         }
 
     }
@@ -381,6 +383,8 @@ public class StatisticsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
+        spinner = (ProgressBar)findViewById(R.id.progressBar1);
+        spinner.setVisibility(View.VISIBLE);
         new StatisticsTask().execute(User.getCurrentUser().getPlayerID());
 
     }

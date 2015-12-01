@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -29,13 +30,15 @@ public class LogInActivity extends AppCompatActivity {
 
 
     AlertDialog.Builder alertDialog;
-
+    private ProgressBar spinner;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
         // Setup Alert Dialogues
         alertDialog = new AlertDialog.Builder(this);
+        spinner = (ProgressBar)findViewById(R.id.progressBar1);
+        spinner.setVisibility(View.GONE);
     }
 
     @Override
@@ -61,7 +64,7 @@ public class LogInActivity extends AppCompatActivity {
     }
 
     public void logIn(View view){
-
+        spinner.setVisibility(View.VISIBLE);
         TextView userNameField = (TextView) findViewById(R.id.user_name);
         TextView passwordField = (TextView) findViewById(R.id.password);
         final String password = passwordField.getText().toString();
@@ -69,9 +72,11 @@ public class LogInActivity extends AppCompatActivity {
 
         try {
             ParseUser.logIn(userName, password);
+            spinner.setVisibility(View.GONE);
             setResult(RESULT_OK);
             finish();
         } catch (ParseException e) {
+            spinner.setVisibility(View.GONE);
             setResult(RESULT_CANCELED);
             AlertDialog dialog = alertDialog.create();
             dialog.setTitle("Error Logging In");
